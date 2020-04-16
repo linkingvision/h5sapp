@@ -11,6 +11,7 @@
     "axios": "^0.19.2",
     "babel-polyfill": "^6.26.0",
     "core-js": "^3.6.4",
+    "element-ui": "^2.13.1",
     "jquery": "^3.4.1",
     "postcss-plugin-px2rem": "^0.8.1",
     "vant": "^2.5.9",

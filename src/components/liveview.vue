@@ -10,26 +10,32 @@
                 <van-search v-model="value" shape="round" background="#252526" placeholder="请查找相关设备"/>
             </div>
           <!-- 视频播放部分 -->
-            <div class="flexvideo" id="videoPanel"  @click="showvideo">
-                <div class="h5videodiv1">
-                  <video class="h5video1" id="h5sVideo1" muted  webkit-playsinline playsinline style= "object-fit: fill;"></video>
+            <div class="flexvideo" id="videoPanel" >
+                <div name='flex' style="position: relative;" class="videoColor" v-for="r in rows" :key="r" @click="showvideo">
+                   <div class="palace" name="flex" v-for="c in cols" @contextmenu.prevent="stopVideo($event)" @click="videoClick(r,c,$event)" :key="c">
+                        <v-liveplayer v-bind:id="'h'+r+c" :h5id="'h'+r+c" :rows="rows" :cols="cols" :h5videoid="'hvideo'+r+c" >
+  
+                        </v-liveplayer>
+                        <div class="overlay">
+                          <van-overlay :show="show">
+                            <van-row>
+                                <van-col span="15">
+                                    <van-icon name="expand-o"/>
+                                    <van-icon name="star-o" />
+                                    <van-icon name="volume-o"/>
+                                    <van-button size="mini">标清</van-button>
+                                </van-col>
+                                <van-col span="9"  offset="">
+                                  <van-icon name="wap-nav" />
+                                  <van-icon name="chat-o" />
+                                </van-col>
+                            </van-row>
+                          </van-overlay>
+                    </div>
+                 </div>
+                  <!-- <video class="h5video1" id="h5sVideo1" muted  webkit-playsinline playsinline style= "object-fit: fill;"></video> -->
                     <!-- 实时视频遮罩按钮 -->
-                  <div class="overlay">
-                  <van-overlay :show="show">
-                      <van-row>
-                          <van-col span="15">
-                              <van-icon name="expand-o"/>
-                              <van-icon name="star-o" />
-                              <van-icon name="volume-o"/>
-                              <van-button size="mini">标清</van-button>
-                          </van-col>
-                          <van-col span="9"  offset="">
-                            <van-icon name="wap-nav" />
-                            <van-icon name="chat-o" />
-                          </van-col>
-                      </van-row>
-                    </van-overlay>
-                   </div>
+                  
                 </div>
              </div>
                 <!--录像 抓拍 云台 按扭  -->
@@ -51,23 +57,8 @@
                 </van-row>
                 <!-- 最近浏览轮播图 -->
                 <van-swipe :loop="false" :width="140">
-                  <van-swipe-item>
-                      <video id="videoElement" width="130" height="100" autoplay  style="background-color:#000000" ></video>
-                  </van-swipe-item>
-                  <van-swipe-item>
-                    <video id="videoElement" width="130"  height="100" autoplay  style="background-color:#000000" ></video>
-                  </van-swipe-item>
-                  <van-swipe-item>
-                      <video id="videoElement" width="130" height="100" autoplay  style="background-color:#000000" ></video>
-                  </van-swipe-item>
-                  <van-swipe-item>
-                      <video id="videoElement" width="130" height="100" autoplay  style="background-color:#000000" ></video>
-                  </van-swipe-item>
-                  <van-swipe-item>
-                      <video id="videoElement" width="130" height="100" autoplay  style="background-color:#000000" ></video>
-                  </van-swipe-item>
-                  <van-swipe-item>
-                      <video id="videoElement" width="130" height="100" autoplay  style="background-color:#000000" ></video>
+                  <van-swipe-item v-for="(item, index) in viewHistory" :key="index">
+                      <video :id="item.videoid" width="130" height="100" autoplay  style="background-color:#000000" ></video>
                   </van-swipe-item>
                 </van-swipe>
             </div>
@@ -118,56 +109,81 @@
               <van-col span="2">...</van-col>
            </van-row>
           
-          <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
-                <van-cell>
-                  <van-row>
-                    <van-col span="8">INDEX</van-col>
-                    <van-col span="8">NAME</van-col>
-                    <van-col span="8">IP</van-col>
-                  </van-row>
-                </van-cell>
-                <van-cell v-for="item in tableData" :key="item" >
-                  <van-row>
-                   <van-col span="8">{{item.strToken}} </van-col>
-                   <van-col span="8">{{item.strName}}</van-col>
-                   <van-col span="8">{{item.strSrcIpAddress}}</van-col>
-                 </van-row>
-                </van-cell>
-          </van-list>
-        
+     
+        <div id="device" >
+          <div class="devicetoog">
+              <div>设备</div>
+              <div @click="devicetoog" class="iconfont deviceicon">&#xe747;</div> 
+          </div>
+           <el-tree
+              :data="data"
+              node-key="id"
+              :filter-node-method="filterNode"
+              ref="tree"
+              highlight-current   
+              @node-click="handleNodeClick"
+              :props="defaultProps">
+              <span slot-scope="{ node, data }" style="width:100%;">
+                  <div style="width:100%;display: flex;justify-content: space-between;">
+                      <span >
+                          <span :class="data.iconclass" style="color:rgb(142, 132, 132);"></span>
+                          <span :class="data.iconclass1" style="padding-left: 4px;">{{data.label}}</span>
+                      </span>
+                      <span :class="data.iconclass2" class="black" style=""></span>
+                  </div>
+              </span>
+          </el-tree>
+        </div>
+        <div id="device1">
+            <div class="devicetoog">
+                <div>区域</div>
+                <div @click="devicetoog1" class="iconfont  deviceicon">&#xe747;</div> 
+             </div>
+
+             <el-tree class="el_tree" 
+                      node-key="strName" 
+                      :default-expanded-keys="['root']" 
+                      :data="camdata" 
+                      :props="defaultProps1" 
+                      @node-click="handleNodeClick">
+                          <span slot-scope="{ node, data }" style="width:100%;">
+                                  <span>
+                                      <span class="mdi mdi-view-sequential fa-fw" style="color:rgb(142, 132, 132);"></span>
+                                      <span :class="data.iconclass1" style="padding-left: 4px;">{{data.strName}}</span>
+                                  </span>
+                                  <div v-if="data.cam.length!=0">
+                                      <el-tree class="el_tree1" :data="data.cam" :props="defaultProps1" @node-click="handleNodeClick1">
+                                          <span slot-scope="{ node, data }">
+                                              <div style="width:100%;display: flex;justify-content: space-between;">
+                                                  <span >
+                                                      <span :class="data.iconclass" style="color:rgb(142, 132, 132);"></span>
+                                                      <span :class="data.iconclass1" style="padding-left: 4px;">{{data.strName}}</span>
+                                                  </span>
+                                                  <span :class="data.iconclass2" class="black" style=""></span>
+                                              </div>
+                                          </span>
+                                      </el-tree>
+                                 </div>
+                        </span>
+              </el-tree>
+       </div>
+     
          
            <!--底部导航  -->
-           <van-tabbar v-model="active"  active-color="#6BE7C3" inactive-color="#415D56" fixed>
+           <van-tabbar v-model="activefoot"  active-color="#6BE7C3" inactive-color="#415D56" fixed>
               <van-tabbar-item>
-                  <van-icon class-prefix="iconfont">&#xe8eb;</van-icon>
+                  <van-icon class-prefix="iconfont2">&#xe62f;</van-icon>
               </van-tabbar-item>
               <van-tabbar-item>
-                 <van-icon class-prefix="iconfont">&#xe635;</van-icon>
+                 <van-icon class-prefix="iconfont2" class="vanicon">&#xe634;</van-icon>
               </van-tabbar-item>
               <van-tabbar-item> 
                  <van-icon class-prefix="iconfont">&#xe663;</van-icon>
               </van-tabbar-item>
-              <van-tabbar-item icon="bell"></van-tabbar-item>
+              <van-tabbar-item >
+                  <van-icon class-prefix="iconfont2" >&#xe626;</van-icon>
+              </van-tabbar-item>
           </van-tabbar>
-          <!-- <div class="footfixed">
-            <div>
-              <van-row class="footnav" type="flex" justify="space-around">
-                  <van-col class="Highlight" id="livelightid" span="6">
-                      <van-icon name="live"/>
-                  </van-col>
-                  <van-col span="6">
-                      <van-icon name="video-o" />
-                  </van-col>
-                  <van-col span="6">
-                      <van-icon name="tv-o" />
-                  </van-col>
-                  <van-col span="6">
-                      <van-icon name="bell" />
-                  </van-col>
-              </van-row>
-              </div>
-            </div> -->
-      
       </div>
 	 </div>
 </template>
@@ -183,6 +199,7 @@ import '../assets/css/h5splayer.css'
 import {H5siOS,H5sPlayerCreate} from '../assets/js/h5splayerhelper.js'
 import {H5sPlayerWS,H5sPlayerHls,H5sPlayerRTC} from '../assets/js/h5splayer.js'
 import $ from 'jquery'
+import Liveplayer from './liveplayer'
 
 import Vue from 'vue'
 import { Search } from 'vant';
@@ -197,7 +214,14 @@ import { Icon } from 'vant';
 import { Cell, CellGroup } from 'vant';
 import { Sticky } from 'vant';
 import { Tabbar, TabbarItem } from 'vant';
+import { TreeSelect } from 'vant';
+import { Sidebar, SidebarItem } from 'vant';
+import { Area } from 'vant';
 
+Vue.use(Area);
+Vue.use(Sidebar);
+Vue.use(SidebarItem);
+Vue.use(TreeSelect);
 Vue.use(Tabbar);
 Vue.use(TabbarItem);
 Vue.use(Sticky);
@@ -220,105 +244,72 @@ Vue.use(Search);
 // import { NavBar } from 'vant';
 export default {
   name: 'liveview',
+  components: {
+        'v-liveplayer': Liveplayer
+    },
   data () {
     return {
+      rc:13,
+      selectCol: 1,
+      selectRow: 1,
+      proto: this.$store.state.rtc,
+      rows: 2,
+      cols: 2,
       loading:false,
       finished:false,
       list: [],
       show:false,
       tableData:[],//资源列表
-      imgList: [
-        //  require('../assets/imag/luxiang2.png' ),
-        //  require('../assets/imag/slices(2).png'),
-        //  require('../assets/imag/icon2(2).png'),
-      ],
-      Useport: this.$store.state.Useport
+      activeId: 1,
+      activeIndex: 0,
+      active: 0,
+      items: [{ text: '摄像机',id:''}],
+      items1:[{text:'ha',id:'',children: [{text:'主码流',id:''},{text:'辅码流',id:''}]}],
+      items2:[{text:'摄像机',id:'',children: [{text:'主码流',id:''},{text:'辅码流',id:''}]}],
+      Useport: this.$store.state.Useport,
+      token:'',
+      src:'',
+      // h5handler:undefined,
+      // videoid:'app',
+      // 资源列表
+      selectCol: 1,
+      electRow: 1,
+      data:[],
+      camdata:[],
+      defaultProps: {
+          children: 'children',
+          label: 'label',
+          token:"token",
+          iconclass:"iconclass"
+      },
+      defaultProps1: {
+          children: 'node',
+          label: 'strName',
+          cam:"cam",
+      },
+      activefoot:'',
+      value:'',
+      viewHistory:[]
     }
   } ,
   // 一进来就要更新的
 mounted(){
-  // var myVideo=document.getElementById("h5sVideo1")
-  //      function playVid(){
-  //        myVideo.play()
-  //      }
-  //      function pauseVid(){
-  //        myVideo.pause()
-  //      }
-      // $(document).ready(function(){
-      console.log(platform.name);
-      console.log(platform.product);
-      console.log(platform.os.family)
-      console.log(window.location.host)
+   console.log(this.viewHistory);
+   this.$root.bus.$emit('liveplayproto',this.proto);
+    console.log(platform.name);
+    console.log(platform.product);
+    console.log(platform.os.family)
+    console.log(window.location.host)
+    $("#device1").hide();
       
-      // if (H5siOS() === true|| H5sSafariBrowser() === true)
-	    //    {
-		  //      $('#h5sVideo1').prop("controls", true);
-      //    }
-       var strToken;
-        strToken = "device1--33"
-       if (strToken === undefined)
-	       {
-		    strToken = 'token1';
-	       }
-        
-        var strStream;
-	      // strStream = GetURLParameter("stream");
-	    //  if (strStream === undefined)
-	    //    {
-		     strStream = 'main';
-        //  }
-  
-       var conf1 = {
-          videoid:'h5sVideo1',
-          protocol: 'http:', //'http:' or 'https:'
-          host:this.Useport.ip+":"+this.Useport.port, //'localhost:8080'
-          rootpath:'/', // '/'
-          token:strToken,
-          streamprofile: strStream, // {string} - stream profile, main/sub or other predefine transcoding profile
-          hlsver:'v1', //v1 is for ts, v2 is for fmp4
-          session:'c1782caf-b670-42d8-ba90-2244d0b0ee83', //session got from login
-          consolelog: 'true' // 'true' or 'false' enable/disable console.log
-        };
-        
-        var v1 = new H5sPlayerWS(conf1);
-        // var v1 = new H5sPlayerRTC(conf1);
-        console.log(v1);
-        // if (GetURLParameter("autoplay") != undefined)
-        // {
-          v1.connect();
-        // $('#playpause1').fadeOut();
-        // }
-        // $('#h5sVideo1').get(0).onplay = function() {
-	      //   	console.log("The video has started to play");
-	      //  };
-       
-      //  $('#h5sVideo1').parent().click(function () {
-	    //  	if($(this).children(".h5video1").get(0).paused){
-			//       if(v1 != null)
-			//   {
-				    // v1.disconnect();
-				    // delete v1;
-				    //  v1 = null;
-		   	// }
-      // v1 = new H5sPlayerWS(conf1);
-			//   console.log(v1);
-		  // 	v1.connect();
-			
-			// $(this).children(".playpause").fadeOut();
-		// }else{
-		// 	v1.disconnect();
-			// delete v1; 
-	// 		v1 = null;
-	// 		$(this).children(".h5video1").get(0).pause();
-	// 		$(this).children(".playpause").fadeIn();
-  //   }
-  // })
-  // })
-  // 获取当前页面的URL
-  // 最近浏览
-   var Url= window.location.href
-   console.log(Url)
+    this.loadDevice()
+    this.Regional()
+    this.loadtest()
+   
   },
+created(){
+  this.viewHistory = JSON.parse(localStorage.getItem("viewHistory"))
+},
  
 // 方法
 methods:{
@@ -331,45 +322,307 @@ methods:{
          this.show=false
      }
    },
-  
+
+videoClick(r, c, $event) {
+      this.selectCol = c;
+      this.selectRow = r;
+       console.log($event);
+      console.log(r, c);
+        if ($($event.target).parent().hasClass('videoClickColor')) {
+            $($event.target).parent().removeClass('videoClickColor');
+        } else {
+            $('#videoPanel div[class*="videoClickColor"]').removeClass('videoClickColor');
+            $('#videoPanel>div').eq(r - 1).children('div').eq(c - 1).addClass('videoClickColor');
+            //$('#videoPanel>div').eq(r - 1).children('div').eq(c - 1).children(".h5videowrapper").children(".h5video").style.opacity = "0.25";
+        }
+  },
+  stopVideo(event){
+      return;
+  },
+//设备隐藏
+  devicetoog(){
+      // $("#device").toggle(100);
+      $("#device").hide();
+      $("#device1").show();
+  },
+ devicetoog1(){
+        // $("#device1").toggle(100);
+        $("#device1").hide();
+        $("#device").show();
+  },
   //资源列表
-  onLoad() {
-       var root = process.env.API_ROOT;
-         console.log(root)
-        var wsroot = process.env.WS_HOST_ROOT;
-        console.log(wsroot)
-        if (root == undefined){
-            root ="http://"+this.Useport.ip+":"+this.Useport.port;
-         }
-        if (wsroot == undefined)
-        {
-            wsroot = this.Useport.ip+":"+this.Useport.port;
-            
-        }
-        //url
-        var url ="http://"+this.Useport.ip+":"+this.Useport.port+ "/api/v1/GetSrc?session="+ this.$store.state.token;
-        this.$http.get(url).then(result=>{ 
-           console.log("全部设备数据",result)
-           if(result.status==200){
-            
-            this.tableData=result.data.src 
-            console.log(this.tableData) 
-            // for (let i = 0; i < 10; i++) {
-            //   this.list.push(this.tableData3.length + 1);
-            // }
-
-          // 加载状态结束
-          this.loading = false;
-
-          // 数据全部加载完成
-          if (this.tableData.length) {
-            this.finished = true;
+  //树形节点点击
+  handleNodeClick(data, checked, indeterminate){
+      console.log(data.disabled_me)
+      console.log(data.label);
+      console.log("1",data);
+      let _this =this;
+      // return false;
+      if(data.disabled_me==false){
+          console.log("----------------------");
+          if (data.token) {
+              let vid = 'h' + _this.$data.selectRow + _this.$data.selectCol;
+              // console.log("----------------------",data.label);
+              _this.$root.bus.$emit('liveplay', data.token, data.streamprofile, data.name,data.label,vid);
           }
+      }else{
+          console.log("不可用");
+      }
+    },
+  handleNodeClick1(data, checked, indeterminate){
+        let _this =this;
+        console.log(data)
+        return false;
+        var main="main"
+        if (data.strToken) {
+            let vid = 'h' + _this.$data.selectRow + _this.$data.selectCol;
+            // console.log("----------------------",data.label);
+            _this.$root.bus.$emit('liveplay', data.strToken,data.streamprofile, data.name,data.label, vid);
         }
-        }).catch()
+    },
   
+  loadtest(){
+    console.log(this.data)
+    
+      var root = process.env.API_ROOT;
+      var wsroot = process.env.WS_HOST_ROOT;
+       if (root == undefined){
+        root = "http://"+this.Useport.ip+":"+this.Useport.port + window.location.pathname;
     }
-  }
+      if (wsroot == undefined){
+        wsroot = this.$store.state.Useport.ip+":"+this.$store.state.Useport.port;
+    }
+   var url = root + "/api/v1//GetSrcCamera?session="+ this.$store.state.token;
+   console.log(url)
+      this.$http.get(url).then(result=>{
+        if(result.status == 200){
+          var data =  result.data;
+          console.log(data)
+          var srcGroup = {children: []};
+          srcGroup.label='摄像机';
+          srcGroup.iconclass="mdi mdi-view-sequential fa-fw";
+           for(var i=0; i< data.src.length; i++){
+                 var item = data.src[i];
+                if(item['nOriginalType'] == 'H5_CH_GB'){
+                    continue;
+                }else{
+                    // 主副流
+                    var node=[{
+                    token : item['strToken'],
+                    streamprofile : "main",
+                    label :"主码流",
+                    name:item['strName']+"--"+"主码流",
+                    iconclass : 'mdi mdi-playlist-play fa-fw',
+                    disabled_me:false
+                    },{
+                    token : item['strToken'],
+                    streamprofile : "sub",
+                    label :'辅码流',
+                    name:item['strName']+"--"+"辅码流",
+                    iconclass : 'mdi mdi-playlist-play fa-fw',
+                    disabled_me:false
+                    }]
+                    var newItem ={
+                            token : item['strToken'],
+                            label : item['strName'],
+                            iconclass : 'mdi mdi-camcorder fa-fw',
+                            iconclass2 : 'mdi mdi-camcorder fa-fw',
+                            name:item['strName']+"--"+'主码流',
+                            children:node,
+                            disabled_me:false};
+                    
+                    if(!item['bOnline'])
+                        newItem['iconclass'] = 'mdi mdi-camcorder-off fa-fw';
+
+                    if(item['nType'] == 'H5_CLOUD')
+                        newItem['iconclass'] = 'mdi mdi-cloud-upload fa-fw';
+                    
+                    if(item['bRec'] == true)
+                        newItem['iconclass2'] = 'iconfont icon-radioboxfill none';
+                        
+                srcGroup.children.push(newItem);
+                }
+            }
+            var listdatag=[]
+            listdatag.push(srcGroup);
+            this.data=listdatag
+            console.log(this.data)
+          } 
+      }).catch(error => {
+        console.log('GetSrc failed', error);
+    });
+   },
+  //  设备获取
+    loadDevice() {
+		    let _this =this;
+		    var root = process.env.API_ROOT;
+		    var wsroot = process.env.WS_HOST_ROOT;
+		    if (root == undefined){
+		        root = "http://"+this.Useport.ip+":"+this.Useport.port + window.location.pathname;
+		    }
+		    if (wsroot == undefined)
+		    {
+		        wsroot =this.$store.state.Useport.ip+":"+this.$store.state.Useport.port;
+		    }
+		   //url
+		   var url = root + "/api/v1/GetDevice?session="+ this.$store.state.token;
+
+			  //重组
+			  this.$http.get(url).then(result=>{
+				  if(result.status == 200){
+					  var srcData = [];
+					  var data=result.data;
+					  for(var i = 0; i < data.dev.length; i++){
+						  var item=data.dev[i];
+						  var srclevel=[];
+						  srclevel["strToken"]=item.strToken;
+						  srclevel["strName"]=item.strName;
+						  this.loadSrc(srclevel,srcData);
+					  }
+				  }
+			  })
+  },
+  loadSrc(srclevel, srcData) {
+
+            let _this =this;
+            var root = process.env.API_ROOT;
+            var wsroot = process.env.WS_HOST_ROOT;
+            if (root == undefined){
+                root = "http://"+this.Useport.ip+":"+this.Useport.port + window.location.pathname;
+            }
+            if (wsroot == undefined)
+            {
+                wsroot = this.$store.state.Useport.ip+":"+this.$store.state.Useport.port;
+            }
+
+            var url = root + "/api/v1/GetDeviceSrc?token="+ srclevel.strToken + "&session=" + this.$store.state.token;
+
+            this.$http.get(url).then(result => {
+                if (result.status == 200)
+                {
+                     var data =  result.data;
+                    var srcGroup = {children: []};
+                    srcGroup.label=srclevel.strName;
+                    srcGroup.iconclass="mdi mdi-view-sequential fa-fw";
+                    for(var i=0; i< data.src.length; i++){
+                        var item = data.src[i];
+                        // 主副流
+                        var node=[{
+                          token : item['strToken'],
+                          streamprofile : "main",
+                          label :'主码流',
+                          name:item['strName']+"--"+'主码流',
+                          iconclass : 'mdi mdi-playlist-play fa-fw',
+                          disabled_me:false
+                        },{
+                          token : item['strToken'],
+                          streamprofile : "sub",
+                          label :'辅码流',
+                          name:item['strName']+"--"+'辅码流',
+                          iconclass : 'mdi mdi-playlist-play fa-fw',
+                          disabled_me:false
+                        }]
+                        for(var l=0; l< node.length; l++){
+                            console.log("1111111111111111111",node[l].disabled_me)
+                            if(item['bDisable'] == true){
+                                node[l].disabled_me =true;
+                            }
+                        }
+                        
+                        var newItem ={
+                                token : item['strToken'],
+                                label : item['strName'],
+                                iconclass : 'mdi mdi-camcorder fa-fw',
+                                iconclass1 : '',
+                                name:item['strName']+"--"+'主码流',
+                                children:node,
+                                disabled_me:false};
+
+                        if(!item['bOnline'])
+                            newItem['iconclass'] = 'mdi mdi-camcorder-off fa-fw';
+
+                        if(item['nType'] == 'H5_CLOUD')
+                            newItem['iconclass'] = 'mdi mdi-cloud-upload fa-fw';
+
+                        if(item['bRec'] == true)
+                                newItem['iconclass2'] = 'iconfont icon-radioboxfill none';
+
+                        if(item['bDisable'] == true){
+                            newItem['disabled_me'] =true;
+                            newItem['iconclass1'] = 'camera';
+                        }
+
+                       srcGroup.children.push(newItem);
+                    }
+                    this.data.push(srcGroup);
+                }
+            }).catch(error => {
+                console.log('GetSrc failed', error);
+            });
+        },
+
+// 区域
+  Regional(){
+   var root = process.env.API_ROOT;
+    if (root == undefined){
+        root = "http://"+this.Useport.ip+":"+this.Useport.port + window.location.pathname;
+    }
+    var url = root + "/api/v1/GetRegion?session="+this.$store.state.token;
+      this.$http.get(url).then(result=>{
+         var oldarr=result.data.root;
+         
+        var oldarr1=result.data.src;
+        var dataroot=this.getchild(oldarr,oldarr1);
+         console.log(dataroot);
+       this.camdata.push(dataroot);
+        console.log(this.camdata)
+    
+    })
+},
+ getchild(arr,arr1) {
+     for(var i in arr.cam){
+        if(!arr.cam[i].strName){
+            for(var j in arr1){
+                if(arr.cam[i].strToken == arr1[j].strToken){
+                    var node1=[{
+                        strToken : arr1[j].strToken,
+                        streamprofile : "main",
+                        strName :'主码流',
+                        name:arr1[j].strName+"--"+'主码流',
+                        iconclass : 'mdi mdi-playlist-play fa-fw',
+                      },{
+                        strToken : arr1[j].strToken,
+                        streamprofile : "sub",
+                        strName :'辅码流',
+                        name:arr1[j].strName+"--"+'辅码流',
+                        iconclass : 'mdi mdi-playlist-play fa-fw',
+                      }]
+                    arr.cam[i].node=node1;
+                    arr.cam[i].strName = arr1[j].strName;
+                    arr.cam[i].name=arr1[j].strName+"--"+'主码流',
+                    arr.cam[i].bOnline = arr1[j].bOnline;
+                    arr.cam[i].iconclass="mdi mdi-camcorder fa-fw"
+                    if(!arr1[j].bOnline)
+                        arr.cam[i].iconclass = 'mdi mdi-camcorder-off fa-fw';
+
+                    if(arr1[j].nConnectType == 'H5_CLOUD')
+                        arr.cam[i].iconclass = 'mdi mdi-camcorder fa-fw';
+
+                    if(arr1[j].bRec == true)
+                        arr.cam[i].iconclass2  = 'iconfont icon-radioboxfill none';
+                }
+            }
+        }
+    }
+   if(arr.node && arr.node.length>0){
+        for (var i = 0; i < arr.node.length; i++) {
+            arr.node[i] =this.getchild(arr.node[i],arr1);
+        }
+    }
+    return arr;
+}
+  //  码流
+}
 }
 
 </script>
@@ -401,7 +654,54 @@ li {
 a {
   color: #42b983;
 }
-
+div[name='flex'] {
+    display: flex;
+    flex-wrap: wrap;
+    border-bottom: 0px !important;
+}
+.palace{
+    position: relative;
+    flex: 1 1 25%;
+    border:1px solid black;
+}
+.h5video1{
+  background-color:transparent !important;
+}
+.videoClickColor {
+    background-color: #616263 !important;
+    opacity: 0.80;
+}
+.Seven_Palace{
+    flex: 1 1 33.33%;
+    height: 33.33% !important;
+}
+.Seven_Palace:nth-child(1){
+    height: 100% !important;
+}
+.Seven_Palace:nth-child(3){
+    width: 33.33% !important;
+    position: absolute;
+    top: 33.33%;
+    right: 0;
+}
+.Seven_Palace:nth-child(2){
+    width: 33.33% !important;
+    position: absolute;
+    top: 33.33%;
+    right: 33.33%;
+}
+.Seven_Palace:nth-child(6){
+    width: 33.33% !important;
+    position: absolute;
+    bottom: 0;
+    right: 33.33%;
+}
+.Seven_Palace:nth-child(7){
+    width: 33.33% !important;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
 /* 字体图标 */
 @font-face {
   font-family: 'iconfont';
@@ -412,8 +712,24 @@ a {
       url('../assets/icon/iconfont.ttf') format('truetype'),
       url('../assets/icon/iconfont.svg#iconfont') format('svg');
 }
+@font-face {
+  font-family: 'iconfont2';
+  src: url('../assets/icon/font/iconfont.eot');
+  src: url('../assets/icon/font/iconfont.eot?#iefix') format('embedded-opentype'),
+      url('../assets/icon/font/iconfont.woff2') format('woff2'),
+      url('../assets/icon/font/iconfont.woff') format('woff'),
+      url('../assets/icon/font/iconfont.ttf') format('truetype'),
+      url('../assets/icon/font/iconfont.svg#iconfont') format('svg');
+}
 .iconfont {
   font-family: "iconfont" !important;
+  font-size: 20px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.iconfont2{
+  font-family: "iconfont2" !important;
   font-size: 20px;
   font-style: normal;
   -webkit-font-smoothing: antialiased;
@@ -468,41 +784,43 @@ a {
   color: #6BE7C3;
 }
 .flexvideo{
-	width: 100%;
+	/* width: %; */
   /* height:422px; */
-  position:relative;
+  /* position:relative; */
   margin-top: 24px;
 } 
-.flexvideo .h5videodiv1 .h5video1{
+.flexvideo .videoColor{
   border: none;
-  background-color:none;
+  background-color: rgb(73, 74, 75) !important;
 }
 .overlay{
   width: 100%;
   position: absolute !important;
   left: 0;
-  bottom:77px;
+  bottom:0px;
+  height:25%;
  }
 
 .van-overlay{
   position: absolute !important;
   width: 100%;
-  height:70px;
+  height: 100%;
   /* background-color: rgb(240, 20, 20); */
 }
 
 .van-overlay .van-row{
-  margin-top:22px;
+  margin:10px 0;
   padding: 0 10px;
   padding-left: 24px;
 }
 .van-overlay .van-icon{
-  padding-right:14px;
+  padding-right:10px;
    vertical-align: middle;
+   font-size: 10px;
 }
 .van-overlay .van-row  .van-button--mini{
   min-width: 0;
-  font-size: 20px;
+  font-size: 10px;
   color: #E7E6E6;
   background-color: #252526;
   line-height: 0;
@@ -597,6 +915,65 @@ a {
 
 }
 /* 资源列表 */
+ .el_tree{
+    color: #606266;
+    font-size: 14px;
+    font-weight: 500;
+    background-color:transparent !important;
+}
+.el-tree-node__content:hover{
+   background-color: transparent;
+}
+
+.el_tree1{
+    margin: 0;
+    margin-right: 10px;
+}
+.el_tree >>> .el-tree-node__content{
+    min-height: 24px;
+    height: auto;
+     background-color: transparent;
+}
+#device span{
+  font-size: 12px;
+}
+/* 设备显示和隐藏 */
+.devicetoog{
+    /* width:100%; */
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    font-size: 18px;
+    color: #ece5e5;
+    font-weight: 600;
+    background-color:transparent;
+   
+  }
+#device1,#device{
+  padding-bottom: 57px;
+
+}
+.van-tree-select__nav,
+.van-tree-select__nav-item
+{
+  background-color:transparent;
+}
+.van-sidebar-item:active{
+   background-color:#817E81;
+}
+.van-tree-select__content{
+  background-color: #2D2D31;
+}
+.van-tree-select__content .van-tree-select__nav{
+  background-color: #2D2D31;
+  border-right:1px solid #252526;
+}
+/* .van-tree-select__content .van-sidebar-item--select {
+  background-color:transparent;
+} */
+.van-sidebar-item{
+  border: none;
+}
 .van-list{
   padding-bottom:64px;
 }
@@ -634,6 +1011,12 @@ a {
 .van-tabbar-item__icon {
   margin-bottom: 1px;
   font-size: 20px;
+}
+.van-tabbar .van-tabbar-item .vanicon{
+   font-size: 25px;
+}
+.van-tree-select{
+  margin-bottom:40px;
 }
 
 </style>

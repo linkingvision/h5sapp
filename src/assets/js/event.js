@@ -1,5 +1,5 @@
 import {H5sEvent} from './h5sevent.js'
-import store from '../../store//index'
+import store from '../../store/index'
 
 //console.log("+++++++++++",store.state.Useport)
 var callport=store.state.Useport;
@@ -23,7 +23,7 @@ function events(){
     var wsroot = callport.ip+":"+callport.port;
     if (wsroot == undefined)
     {
-        wsroot = window.location.host;
+        wsroot = this.$store.state.Useport.ip+":"+this.$store.state.Useport.port;
     }
     //console.log("wsroot",wsroot,window.location.protocol);
     var conf1 = {

@@ -30,8 +30,8 @@
                     <van-row type="flex" justify="center" class="line">
                         <van-col span="3"></van-col>
                         <van-col span="18">
+                             <van-field  placeholder="请输入Ip"  v-model="Useport.ip"  name="服务器" type="text"   left-icon="stop" :rules="[{ required: true, message: '请填写' }]"/>
                             <van-field  placeholder="请输入端口号" name="服务器端口" v-model="Useport.port" type="text" left-icon="stop"  :rules="[{ required: true, message: '请填写端口' }]"/>
-                            <van-field  placeholder="请输入Ip"  v-model="Useport.ip"  name="服务器" type="text"   left-icon="stop" :rules="[{ required: true, message: '请填写' }]"/>
                         </van-col>
                         <van-col span="3"></van-col>
                     </van-row>
@@ -55,7 +55,7 @@
 // import '../assets/js/jQuery.md5.js'
 import Vue from 'vue'
 import * as types from '@/store/types'
-
+// import '@/assets/jQuery.md5.js'
 import { NavBar } from 'vant';
 import { Field } from 'vant';
 import { Cell, CellGroup } from 'vant';
@@ -77,13 +77,13 @@ export default {
      return{
      callport:this.$store.state.callport,//使用端口号//使用端口号
      Useport:[{
-            ip:this.$store.state.Useport.ip,
-            port:this.$store.state.Useport.port,
-            user:this.$store.state.Useport.user,
-            psw:this.$store.state.Useport.psw}
-        ],//端口号
-    }
- },
+            ip:'',
+            port:'',
+            user:'',
+            psw:''
+          }],//端口号
+      }
+  },
   computed:{
         count(){
             return this.$store.state.Useport;
@@ -91,24 +91,29 @@ export default {
     },
 
    mounted(){
-       console.log(this.$store.state.Useport)
+         console.log(this.$store.state.Useport)
     },
   methods: {
     // 提交触发表单
     onSubmit() {
-          console.log(1)
-            this.$store.commit(types.USEPORTIP, this.Useport.ip);
+            console.log(this.$store.state.Useport.ip)
+            this.$store.commit(types.USEPORTIP, this.Useport.ip)
             this.$store.commit(types.USEPORTPORT, this.Useport.port);
             this.$store.commit(types.USEPORTUSER, this.Useport.user);
             this.$store.commit(types.USEPORTPSW, this.Useport.psw);
-           console.log(this.Useport.ip)
+           let _this =this;
            var url = "http://"+this.Useport.ip+":"+this.Useport.port+"/"
            this.callport=url;
            this.$store.commit(types.USEPORT, url);
-           this.$router.push('/liveview');
-           var baseurl = this.callport + "/api/v1/GetSrc?session=session";
+          var baseurl = this.callport + "/api/v1/Login?user=" +this.Useport.user + "&password=" + this.Useport.psw;
+        //   return false
            this.$http.get(baseurl).then(result => {
                console.log(result)
+            if(result.status == 200){
+                this.$router.push('/liveview');
+             _this.$store.commit(types.LOGIN, data['strSession']);
+             this.$router.push('/liveview');
+            }
             var data = result.data.src;  
             console.log(data);
             //  for (var i = 0; i < data.length; i++) {
@@ -164,7 +169,7 @@ export default {
   .img .van-col{
       text-align: left;
       padding-left:20px;
-      margin: 55px 0;
+      margin: 20px 0;
   }
   .btns{
       margin: 10px 0;
