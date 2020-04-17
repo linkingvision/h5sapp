@@ -55,7 +55,8 @@
 // import '../assets/js/jQuery.md5.js'
 import Vue from 'vue'
 import * as types from '@/store/types'
-// import '@/assets/jQuery.md5.js'
+// import $ from 'jquery'
+// import '../assets/js/jQuery.md5'
 import { NavBar } from 'vant';
 import { Field } from 'vant';
 import { Cell, CellGroup } from 'vant';
@@ -105,47 +106,20 @@ export default {
            var url = "http://"+this.Useport.ip+":"+this.Useport.port+"/"
            this.callport=url;
            this.$store.commit(types.USEPORT, url);
-          var baseurl = this.callport + "/api/v1/Login?user=" +this.Useport.user + "&password=" + this.Useport.psw;
+           var baseurl = this.callport + "/api/v1/Login?user=" +_this.Useport.user + "&password=" + _this. Useport.psw;
         //   return false
-           this.$http.get(baseurl).then(result => {
+            this.$http.get(baseurl).then(result => {
                console.log(result)
             if(result.status == 200){
-                this.$router.push('/liveview');
+            var data = result.data.src; 
+            this.$router.push('/liveview');
              _this.$store.commit(types.LOGIN, data['strSession']);
              this.$router.push('/liveview');
-            }
-            var data = result.data.src;  
-            console.log(data);
-            //  for (var i = 0; i < data.length; i++) {
-            //       var item = data[i];
-            //        var strPosterUri ="http://"+this.Useport.ip+":"+this.Useport.port+"/" +'api/v1/GetImage?token=' + data[i].strToken + '&session=' + "session";
-            //     }  
-     })
-    //   let _this =this;
-    //   var root = process.env.API_ROOT;
-    //   if (root == undefined){
-    //   root = window.location.protocol + '//' + window.location.host + window.location.pathname;
-    //  }
-    //  console.log('submit', window.location.pathname);
-    //  var url=root+"/api/v1/Login?user=" + _this.username + "&password=" + _this.password
-    //  console.log(url)
-    //  this.$http.get(url).then(result=>{
-    //      if(result.data.bStatus==false){
-             
-    //    this.$router.push('/HelloWorld');
-            //  _this.$store.commit(types.LOGIN,result.data['strSession'])
-
-            // let redirect = decodeURIComponent(_this.$route.query.redirect || '/');
-            // console.log(_this.$route.query.redirect);
-           
-        // }else{
-             
-        // }
-
-    //  }).catch()
-
-   
-    },
+              console.log(result) 
+        }
+            
+  }).catch()
+  },
   },
 }
 </script>

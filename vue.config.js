@@ -1,5 +1,5 @@
 module.exports = {
- // const webpack= require('webpack'),
+//  const webpack= require('webpack'),
  // lintOnSave: false,
  // npm
  lintOnSave: true,
@@ -65,6 +65,15 @@ css: {
         assetFilter: function(assetFilename) {
             return assetFilename.endsWith('.js');
         }
-    }
- }
+    },
+    // plugins: [
+    //   new webpack.ProvidePlugin({
+    //  $: "jquery",
+    //  jQuery: "jquery",
+    //  jquery: "jquery",
+    //  "window.jQuery": "jquery"
+    //   })
+    //  ],
+ },
+
 }

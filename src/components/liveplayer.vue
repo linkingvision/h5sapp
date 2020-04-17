@@ -135,32 +135,7 @@ mounted(){
         }
            
       },
-    //  历史记录
-     history(){
-         if (this.h5handler != undefined)
-        {
-        this.h5handler.disconnect();
-        delete this.h5handler;
-        this.h5handler = undefined;
-       }
-        this.currtoken = token;
-        var root = process.env.API_ROOT;
-        var wsroot = process.env.WS_HOST_ROOT;
-        if (root == undefined){
-            root = "http://"+this.$store.state.Useport.ip+":"+this.$store.state.Useport.port + window.location.pathname;
-        }
-        if (wsroot == undefined)
-        {
-            wsroot = this.$store.state.Useport.ip+":"+this.$store.state.Useport.port;
-        }
-        for(let i=0; i<this.viewHistory.length; i++){
-           
-        }
-        this.h5handler = new H5sPlayerRTC(conf);
-        $("#"+this.rtcid).addClass("rtc_new");
-        this.h5handler = new H5sPlayerWS(conf);
-        this.h5handler.connect();
-    },
+   
    }
 }
 </script>

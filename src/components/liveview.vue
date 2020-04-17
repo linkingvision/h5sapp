@@ -57,8 +57,8 @@
                 </van-row>
                 <!-- 最近浏览轮播图 -->
                 <van-swipe :loop="false" :width="140">
-                  <van-swipe-item v-for="(item, index) in viewHistory" :key="index">
-                      <video :id="item.videoid" width="130" height="100" autoplay  style="background-color:#000000" ></video>
+                  <van-swipe-item v-for="(item, index) in viewHistory" :key="index" @click="history(item)">
+                      <video :id="item.token" width="130" height="100" autoplay  style="background-color:#000000" ></video>
                   </van-swipe-item>
                 </van-swipe>
             </div>
@@ -309,6 +309,7 @@ mounted(){
   },
 created(){
   this.viewHistory = JSON.parse(localStorage.getItem("viewHistory"))
+  this. history()
 },
  
 // 方法
@@ -339,7 +340,7 @@ videoClick(r, c, $event) {
   stopVideo(event){
       return;
   },
-//设备隐藏
+  //设备隐藏
   devicetoog(){
       // $("#device").toggle(100);
       $("#device").hide();
@@ -620,7 +621,32 @@ videoClick(r, c, $event) {
         }
     }
     return arr;
-}
+},
+ //  历史记录
+  history(event){
+    console.log(event)
+    var root = process.env.API_ROOT;
+    var wsroot = process.env.WS_HOST_ROOT;
+    if (root == undefined){
+        root = "http://"+this.$store.state.Useport.ip+":"+this.$store.state.Useport.port + window.location.pathname;
+    }
+    if (wsroot == undefined)
+    {
+        wsroot = this.$store.state.Useport.ip+":"+this.$store.state.Useport.port;
+    }
+    for(let i=0; i<this.viewHistory.length; i++){
+        let data=this.viewHistory
+        let  videoid=da
+        var  confItem = data[i];
+        // let  videoid=data[i].token
+        //  confItem.videoid=videoid
+        console.log(confItem)
+        this.h5handler = new H5sPlayerRTC(confItem);
+        $("#"+this.rtcid).addClass("rtc_new");
+        this.h5handler = new H5sPlayerWS(confItem);
+    }
+        this.h5handler.connect();
+  },
   //  码流
 }
 }
@@ -919,7 +945,7 @@ div[name='flex'] {
     color: #606266;
     font-size: 14px;
     font-weight: 500;
-    background-color:transparent !important;
+    /* background-color:transparent !important; */
 }
 .el-tree-node__content:hover{
    background-color: transparent;
