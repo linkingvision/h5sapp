@@ -55,8 +55,8 @@
 // import '../assets/js/jQuery.md5.js'
 import Vue from 'vue'
 import * as types from '@/store/types'
-// import $ from 'jquery'
-// import '../assets/js/jQuery.md5'
+import $ from 'jquery'
+import '../assets/js/jQuery.md5'
 import { NavBar } from 'vant';
 import { Field } from 'vant';
 import { Cell, CellGroup } from 'vant';
@@ -106,7 +106,7 @@ export default {
            var url = "http://"+this.Useport.ip+":"+this.Useport.port+"/"
            this.callport=url;
            this.$store.commit(types.USEPORT, url);
-           var baseurl = this.callport + "/api/v1/Login?user=" +_this.Useport.user + "&password=" + _this. Useport.psw;
+           var baseurl = this.callport + "/api/v1/Login?user=" +_this.Useport.user + "&password=" + $.md5(_this. Useport.psw);
         //   return false
             this.$http.get(baseurl).then(result => {
                console.log(result)
@@ -117,7 +117,7 @@ export default {
              this.$router.push('/liveview');
               console.log(result) 
         }
-            
+
   }).catch()
   },
   },

@@ -6,7 +6,10 @@ import 'element-ui/lib/theme-chalk/index.css';
 import App from './App'
 import store from './store'
 import $ from 'jquery'
-// Vue.prototype.$ = $;
+Vue.prototype.$ = $;
+window.jQuery=$;
+window.$=$
+
 // import "@/amfe-flexible/index.js";
 // import axios from '@/http'
 

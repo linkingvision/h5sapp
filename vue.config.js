@@ -1,8 +1,10 @@
+const webpack = require('webpack')
 module.exports = {
-//  const webpack= require('webpack'),
+ // const webpack= require('webpack'),
  // lintOnSave: false,
  // npm
- lintOnSave: true,
+  
+  lintOnSave: false,
  publicPath: process.env.NODE_ENV === 'production'
  ? './'
  : '/',
@@ -66,14 +68,17 @@ css: {
             return assetFilename.endsWith('.js');
         }
     },
-    // plugins: [
-    //   new webpack.ProvidePlugin({
-    //  $: "jquery",
-    //  jQuery: "jquery",
-    //  jquery: "jquery",
-    //  "window.jQuery": "jquery"
-    //   })
-    //  ],
+    
  },
-
+ 
+ runtimeCompiler: true,
+ configureWebpack: {
+    plugins: [
+       new webpack.ProvidePlugin({
+         $:"jquery",
+         jQuery:"jquery",
+         "windows.jQuery":"jquery"
+       })
+     ]
+ },
 }
