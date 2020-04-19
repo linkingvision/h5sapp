@@ -10,7 +10,7 @@ module.exports = {
  : '/',
  assetsDir:'static',
  devServer: {
-  port: 8080,// 端口
+  port: 8081,// 端口
 
 //   proxy: {//配置跨域
 //     '/api': {

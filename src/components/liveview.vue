@@ -168,8 +168,7 @@
               </el-tree>
        </div>
      
-         
-           <!--底部导航  -->
+                   <!-- 底部导航  -->
            <van-tabbar v-model="activefoot"  active-color="#6BE7C3" inactive-color="#415D56" fixed>
               <van-tabbar-item>
                   <van-icon class-prefix="iconfont2">&#xe62f;</van-icon>
@@ -184,10 +183,11 @@
                   <van-icon class-prefix="iconfont2" >&#xe626;</van-icon>
               </van-tabbar-item>
           </van-tabbar>
+ 
       </div>
 	 </div>
 </template>
-sc
+
 <script>
 import '../assets/js/jquery-3.1.1.js'
 // import '../assets/js/bootstrap.js'
@@ -388,12 +388,12 @@ videoClick(r, c, $event) {
       var root = process.env.API_ROOT;
       var wsroot = process.env.WS_HOST_ROOT;
        if (root == undefined){
-        root = "http://"+this.Useport.ip+":"+this.Useport.port + window.location.pathname;
+        root = "http://"+this.Useport.ip+":"+this.Useport.port;
     }
       if (wsroot == undefined){
         wsroot = this.$store.state.Useport.ip+":"+this.$store.state.Useport.port;
     }
-   var url = root + "/api/v1//GetSrcCamera?session="+ this.$store.state.token;
+   var url ="http://"+this.Useport.ip+":"+this.Useport.port+ "/api/v1//GetSrcCamera?session="+ this.$store.state.token;
    console.log(url)
       this.$http.get(url).then(result=>{
         if(result.status == 200){
@@ -459,14 +459,14 @@ videoClick(r, c, $event) {
 		    var root = process.env.API_ROOT;
 		    var wsroot = process.env.WS_HOST_ROOT;
 		    if (root == undefined){
-		        root = "http://"+this.Useport.ip+":"+this.Useport.port + window.location.pathname;
+		        root = "http://"+this.Useport.ip+":"+this.Useport.port;
 		    }
 		    if (wsroot == undefined)
 		    {
 		        wsroot =this.$store.state.Useport.ip+":"+this.$store.state.Useport.port;
 		    }
 		   //url
-		   var url = root + "/api/v1/GetDevice?session="+ this.$store.state.token;
+		   var url = "http://"+this.Useport.ip+":"+this.Useport.port+ "/api/v1/GetDevice?session="+ this.$store.state.token;
 
 			  //重组
 			  this.$http.get(url).then(result=>{
@@ -489,7 +489,7 @@ videoClick(r, c, $event) {
             var root = process.env.API_ROOT;
             var wsroot = process.env.WS_HOST_ROOT;
             if (root == undefined){
-                root = "http://"+this.Useport.ip+":"+this.Useport.port + window.location.pathname;
+                root = "http://"+this.Useport.ip+":"+this.Useport.port;
             }
             if (wsroot == undefined)
             {
@@ -566,7 +566,7 @@ videoClick(r, c, $event) {
   Regional(){
    var root = process.env.API_ROOT;
     if (root == undefined){
-        root = "http://"+this.Useport.ip+":"+this.Useport.port + window.location.pathname;
+        root = "http://"+this.Useport.ip+":"+this.Useport.port;
     }
     var url = root + "/api/v1/GetRegion?session="+this.$store.state.token;
       this.$http.get(url).then(result=>{
@@ -628,7 +628,7 @@ videoClick(r, c, $event) {
     var root = process.env.API_ROOT;
     var wsroot = process.env.WS_HOST_ROOT;
     if (root == undefined){
-        root = "http://"+this.$store.state.Useport.ip+":"+this.$store.state.Useport.port + window.location.pathname;
+        root = "http://"+this.$store.state.Useport.ip+":"+this.$store.state.Useport.port;
     }
     if (wsroot == undefined)
     {
