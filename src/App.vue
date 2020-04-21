@@ -10,8 +10,6 @@ export default {
   components: {
    
   },
-
-      
 }
 </script>
 
@@ -34,4 +32,11 @@ html,body{
   color: #2c3e50;
   /* margin-top: 60px; */
  }
+  .van-overlay{
+    background: none !important;
+  }
+  
+  .van-sticky {
+    z-index: 2050;
+  }
 </style>

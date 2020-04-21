@@ -1,6 +1,6 @@
 <template>
     <div class="h5container">
-        <video poster="" class="h5video1" :id="videoid" muted webkit-playsinline playsinline style= "object-fit: fill;">
+        <video class="h5video1" :id="videoid" muted webkit-playsinline playsinline poster="./imgs/blank.png" style= "object-fit: fill;">
         </video>
         <div :id="rtcid" class=""></div>
     </div>
@@ -40,30 +40,103 @@ export default {
         this.currtoken = undefined;
     },
     mounted(){
-            let _this=this;
-            this.$root.bus.$on('liveplay', function(token,streamprofile,label,name, id){
-                console.log(token,streamprofile,label,name, id)
-                // return false;
-                if (_this.h5id != id)
-                {
-                    return;
-                }
-                _this.PlayVideo(token,streamprofile,label,name);
-                _this.tokenshou=token;
+        let _this=this;
+        this.$root.bus.$on('liveplay', function(token,streamprofile,label,name, id){
+            console.log(token,streamprofile,label,name, id)
+            // return false;
+            if (_this.h5id != id)
+            {
+                return;
+            }
+            _this.PlayVideo(token,streamprofile,label,name);
+            _this.tokenshou=token;
 
         });
-            this.$root.bus.$on('liveplayproto', function(proto)
-            {
-                _this.proto = proto;
-                // console.log(proto)
-                //储存
-                localStorage.setItem("proto",_this.proto);
-                //console.log("liveplayproto", _this.proto);
-            });
+        this.$root.bus.$on('liveplayproto', function(proto)
+        {
+            _this.proto = proto;
+            // console.log(proto)
+            //储存
+            localStorage.setItem("proto",_this.proto);
+            //console.log("liveplayproto", _this.proto);
+        });
+        this.$root.bus.$on('liveplayclose', function(vid,playid){
+            console.log(vid,playid,_this.videoid);
+            if(playid==_this.h5videoid){
+                console.log("deng")
+                _this.playclose();
+            }else{
+                console.log("budeng")
+                return false
+            }
+        });
+        this.$root.bus.$on('liveplaypull', function(playid){
+            if(playid==_this.h5videoid){
+                console.log("deng")
+                _this.pull(playid);
+            }else{
+                console.log("budeng")
+                return false
+            }
+        });
     },
     methods:{
+        pull(playid){
+            var elem = $("#"+playid).get(0);
+            //var elem = $("#videoPanel");
+            console.log('panelFullScreen', event);
+            if (
+            document.fullscreenEnabled ||
+            document.webkitFullscreenEnabled ||
+            document.mozFullScreenEnabled ||
+            document.msFullscreenEnabled
+            ) {
+                if (
+                    document.fullscreenElement ||
+                    document.webkitFullscreenElement ||
+                    document.mozFullScreenElement ||
+                    document.msFullscreenElement
+                ) {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    } else if (document.mozCancelFullScreen) {
+                        document.mozCancelFullScreen();
+                    } else if (document.msExitFullscreen) {
+                        document.msExitFullscreen();
+                    }
+                    console.log("========  updateUIExitFullScreen");
+                    this.updateUIExitFullScreen();
+                } else {
+                     console.log('panelFullScreen3');
+
+                    if (elem.requestFullscreen) {
+                        elem.requestFullscreen();
+                    } else if (elem.webkitRequestFullscreen) {
+                        elem.webkitRequestFullscreen();
+                    } else if (elem.mozRequestFullScreen) {
+                        elem.mozRequestFullScreen();
+                    } else if (elem.msRequestFullscreen) {
+                        elem.msRequestFullscreen();
+                    }
+                }
+            } else {
+                console.log('Fullscreen is not supported on your browser.');
+        	}
+        },
+        playclose(){
+            if (this.h5handler != undefined)
+            {
+                console.log("////////////")
+                this.h5handler.disconnect();
+                delete this.h5handler;
+                this.h5handler = undefined;
+                $("#" + this.h5videoid).get(0).load();
+                $("#" + this.h5videoid).get(0).poster = './imgs/blank.png';
+            }
+        },
         PlayVideo(token,streamprofile,label,name){
-            console.log(label)
             if (this.h5handler != undefined)
             {
                 console.log("////////////")
@@ -83,7 +156,7 @@ export default {
             }
             let conf = {
                 videoid: this.videoid,
-                protocol: window.location.protocol, //http: or https:
+                protocol:"http:", //http: or https:
                 host: wsroot, //localhost:8080
                 streamprofile: streamprofile, // {string} - stream profile, main/sub or other predefine transcoding profile
                 rootpath: '/', // '/'
@@ -140,12 +213,10 @@ export default {
         height: 100%;
     }
     .h5video1{
-        /* display: none; */
         width: 100%;
         /* height: 100%; */
         background-color:transparent !important;
         box-sizing: border-box;
-        /* display: none; */
         background: none;
     }
 </style>

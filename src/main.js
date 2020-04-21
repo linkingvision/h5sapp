@@ -36,6 +36,7 @@ import { Tabbar, TabbarItem } from 'vant';
 import { TreeSelect } from 'vant';
 import { Sidebar, SidebarItem } from 'vant';
 import { Area } from 'vant';
+import { Popup } from 'vant';
 
 Vue.use(Area);
 Vue.use(Sidebar);
@@ -59,6 +60,7 @@ Vue.use(Overlay);
 Vue.use(Col);
 Vue.use(Image);
 Vue.use(Search);
+Vue.use(Popup);
 // import event from '@/assets/js/event'
 // Vue.prototype.EVENT = event
 // designSize:设计图尺寸(传@1x倍图尺寸,例如设计图是750px,2倍图,那么传375),rootValue:比例,默认100

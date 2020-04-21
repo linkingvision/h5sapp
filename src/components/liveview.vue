@@ -7,7 +7,9 @@
 				<span class="livespan">实时</span>视频
 			</div>
 			<!-- 视频播放部分 -->
-			<div class="flexvideo" id="videoPanel" >
+			
+			<van-sticky>
+				<div class="flexvideo" id="videoPanel" >
 					<div name='flex' style="position: relative;" class="videoColor" v-for="r in rows" :key="r" @click="showvideo">
 						<div class="palace" name="flex" v-for="c in cols" @contextmenu.prevent="stopVideo($event)" @click="videoClick(r,c,$event)" :key="c">
 							<v-liveplayer v-bind:id="'h'+r+c" :h5id="'h'+r+c" :rows="rows" :cols="cols" :h5videoid="'hvideo'+r+c" >
@@ -15,20 +17,21 @@
 							</v-liveplayer>
 						</div>
 					</div>
-				<div class="Close_flex">
-					<div class="video_funsize">
-						<div class="fun_pull"></div>
-						<span class="fun_coll"></span>
-						<span class="fun_voice"></span>
-						<span>标清</span>
-					</div>
-					<div class="video_funsize1">
-						<span class="fun_onwwin" data-row="1|1" @click="changePanel($event)"></span>
-						<span class="fun_fouwin" data-row="2|2" @click="changePanel($event)"></span>
-						<span @click="close">关闭</span>
+					<div class="Close_flex">
+						<div class="video_funsize">
+							<div class="fun_pull" @click="FullScreen"></div>
+							<span class="fun_coll"></span>
+							<span class="fun_voice"></span>
+							<span>标清</span>
+						</div>
+						<div class="video_funsize1">
+							<span class="fun_onwwin" data-row="1|1" @click="changePanel($event)"></span>
+							<span class="fun_fouwin" data-row="2|2" @click="changePanel($event)"></span>
+							<span @click="close">关闭</span>
+						</div>
 					</div>
 				</div>
-			</div>
+			</van-sticky>
 			<div class="contert">
 				<!-- 功能按钮 -->
 				<div class="video_but">
@@ -98,36 +101,45 @@
 				</van-row>
 				
 				<div id="device1">
-					<div class="devicetoog">
-						<div>区域</div>
-						<div class="iconfont  deviceicon">&#xe747;</div> 
-					</div>
-
-					<el-tree class="el_tree" 
-						node-key="strName" 
-						:default-expanded-keys="['root']" 
-						:data="camdata" 
-						:props="defaultProps1">
-						<span slot-scope="{ node, data }" style="width:100%;">
-							<span>
-								<span class="mdi mdi-view-sequential fa-fw" style="color:rgb(142, 132, 132);"></span>
-								<span :class="data.iconclass1" style="padding-left: 4px;">{{data.strName}}</span>
+					<van-cell is-link @click="showPopup" :border="false" style="background-color: #2D2D30; color:#FFFFFF;">
+						<van-col style="color: #FEFEFE;" span="11">资源列表</van-col>
+						<van-col style="color: #C3C3C3;" span="11" ></van-col>
+					</van-cell>
+					<van-popup 
+						v-model="showli" round closeable 
+						position="bottom" 
+						:style="{ height: '46%' }"
+						class="van_popup"
+						style="">
+						<div class="devicetoog">
+							<div>区域</div>
+						</div>
+						<el-tree class="el_tree" 
+							node-key="strName" 
+							:default-expanded-keys="['root']" 
+							:data="camdata" 
+							:props="defaultProps1">
+							<span slot-scope="{ node, data }" style="width:100%;">
+								<span>
+									<span class="mdi mdi-view-sequential fa-fw" style="color:rgb(142, 132, 132);"></span>
+									<span :class="data.iconclass1" style="padding-left: 4px;">{{data.strName}}</span>
+								</span>
+								<div v-if="data.cam.length!=0">
+									<el-tree class="el_tree1" :data="data.cam" :props="defaultProps1" @node-click="handleNodeClick1">
+										<span slot-scope="{ node, data }">
+											<div style="width:100%;display: flex;justify-content: space-between;">
+												<span >
+													<span :class="data.iconclass" style="color:rgb(142, 132, 132);"></span>
+													<span :class="data.iconclass1" style="padding-left: 4px;">{{data.strName}}</span>
+												</span>
+												<span :class="data.iconclass2" class="black" style=""></span>
+											</div>
+										</span>
+									</el-tree>
+								</div>
 							</span>
-							<div v-if="data.cam.length!=0">
-								<el-tree class="el_tree1" :data="data.cam" :props="defaultProps1" @node-click="handleNodeClick1">
-									<span slot-scope="{ node, data }">
-										<div style="width:100%;display: flex;justify-content: space-between;">
-											<span >
-												<span :class="data.iconclass" style="color:rgb(142, 132, 132);"></span>
-												<span :class="data.iconclass1" style="padding-left: 4px;">{{data.strName}}</span>
-											</span>
-											<span :class="data.iconclass2" class="black" style=""></span>
-										</div>
-									</span>
-								</el-tree>
-							</div>
-						</span>
-					</el-tree>
+						</el-tree>
+					</van-popup>
 				</div>
 			</div>
 		</div>
@@ -157,6 +169,7 @@ export default {
     },
 	data () {
 		return {
+			showli: false,
 			rc:13,
 			selectCol: 1,
 			selectRow: 1,
@@ -214,11 +227,25 @@ export default {
  
 // 方法
 methods:{
-  	close(){
-		  console.log("关闭");
+	//弹出曾
+	showPopup() {
+      	this.showli = true;
 	},
+	//关闭
+  	close(){
+		console.log("关闭");
+		let vid = 'h' + this.$data.selectRow + this.$data.selectCol;
+		let playid = 'hvideo' + this.$data.selectRow + this.$data.selectCol;
+		this.$root.bus.$emit('liveplayclose',vid,playid);
+	},
+	FullScreen(){
+		console.log("全屏");
+        let playid = 'hvideo' + this.$data.selectRow + this.$data.selectCol;
+		this.$root.bus.$emit('liveplaypull',playid);
+    },
   	//实时视频遮罩层显示和隐藏
 	showvideo(){
+		this.showli = true;
 		if(this.show===false){
 		this.show=true
 		}else{
@@ -258,7 +285,7 @@ methods:{
 	videoClick(r, c, $event) {
 		this.selectCol = c;
 		this.selectRow = r;
-		console.log(r, c);
+		console.log(r, c,$($event.target).parent().hasClass('videoClickColor'));
 		if ($($event.target).parent().hasClass('videoClickColor')) {
 			$($event.target).parent().removeClass('videoClickColor');
 		} else {
@@ -282,202 +309,19 @@ methods:{
 			_this.$root.bus.$emit('liveplay', data.strToken,data.streamprofile, data.name,data.strName, vid);
 		}
 	},
-	
-	loadtest(){
-		console.log(this.data)
-		
-		var root = process.env.API_ROOT;
-		var wsroot = process.env.WS_HOST_ROOT;
-		if (root == undefined){
-			root = "http://"+this.Useport.ip+":"+this.Useport.port + window.location.pathname;
-		}
-		if (wsroot == undefined){
-			wsroot = this.$store.state.Useport.ip+":"+this.$store.state.Useport.port;
-		}
-		var url = root + "/api/v1//GetSrcCamera?session="+ this.$store.state.token;
-		console.log(url)
-		this.$http.get(url).then(result=>{
-			if(result.status == 200){
-			var data =  result.data;
-			console.log(data)
-			var srcGroup = {children: []};
-			srcGroup.label='摄像机';
-			srcGroup.iconclass="mdi mdi-view-sequential fa-fw";
-			for(var i=0; i< data.src.length; i++){
-					var item = data.src[i];
-					if(item['nOriginalType'] == 'H5_CH_GB'){
-						continue;
-					}else{
-						// 主副流
-						var node=[{
-						token : item['strToken'],
-						streamprofile : "main",
-						label :"主码流",
-						name:item['strName']+"--"+"主码流",
-						iconclass : 'mdi mdi-playlist-play fa-fw',
-						disabled_me:false
-						},{
-						token : item['strToken'],
-						streamprofile : "sub",
-						label :'辅码流',
-						name:item['strName']+"--"+"辅码流",
-						iconclass : 'mdi mdi-playlist-play fa-fw',
-						disabled_me:false
-						}]
-						var newItem ={
-								token : item['strToken'],
-								label : item['strName'],
-								iconclass : 'mdi mdi-camcorder fa-fw',
-								iconclass2 : 'mdi mdi-camcorder fa-fw',
-								name:item['strName']+"--"+'主码流',
-								children:node,
-								disabled_me:false};
-						
-						if(!item['bOnline'])
-							newItem['iconclass'] = 'mdi mdi-camcorder-off fa-fw';
-
-						if(item['nType'] == 'H5_CLOUD')
-							newItem['iconclass'] = 'mdi mdi-cloud-upload fa-fw';
-						
-						if(item['bRec'] == true)
-							newItem['iconclass2'] = 'iconfont icon-radioboxfill none';
-							
-					srcGroup.children.push(newItem);
-					}
-				}
-				var listdatag=[]
-				listdatag.push(srcGroup);
-				this.data=listdatag
-				console.log(this.data)
-			} 
-		}).catch(error => {
-			console.log('GetSrc failed', error);
-		});
-	},
-	//  设备获取
-	loadDevice() {
-				let _this =this;
-				var root = process.env.API_ROOT;
-				var wsroot = process.env.WS_HOST_ROOT;
-				if (root == undefined){
-					root = "http://"+this.Useport.ip+":"+this.Useport.port + window.location.pathname;
-				}
-				if (wsroot == undefined)
-				{
-					wsroot =this.$store.state.Useport.ip+":"+this.$store.state.Useport.port;
-				}
-			//url
-			var url = root + "/api/v1/GetDevice?session="+ this.$store.state.token;
-
-				//重组
-				this.$http.get(url).then(result=>{
-					if(result.status == 200){
-						var srcData = [];
-						var data=result.data;
-						for(var i = 0; i < data.dev.length; i++){
-							var item=data.dev[i];
-							var srclevel=[];
-							srclevel["strToken"]=item.strToken;
-							srclevel["strName"]=item.strName;
-							this.loadSrc(srclevel,srcData);
-						}
-					}
-				})
-	},
-	loadSrc(srclevel, srcData) {
-
-				let _this =this;
-				var root = process.env.API_ROOT;
-				var wsroot = process.env.WS_HOST_ROOT;
-				if (root == undefined){
-					root = "http://"+this.Useport.ip+":"+this.Useport.port + window.location.pathname;
-				}
-				if (wsroot == undefined)
-				{
-					wsroot = this.$store.state.Useport.ip+":"+this.$store.state.Useport.port;
-				}
-
-				var url = root + "/api/v1/GetDeviceSrc?token="+ srclevel.strToken + "&session=" + this.$store.state.token;
-
-				this.$http.get(url).then(result => {
-					if (result.status == 200)
-					{
-						var data =  result.data;
-						var srcGroup = {children: []};
-						srcGroup.label=srclevel.strName;
-						srcGroup.iconclass="mdi mdi-view-sequential fa-fw";
-						for(var i=0; i< data.src.length; i++){
-							var item = data.src[i];
-							// 主副流
-							var node=[{
-							token : item['strToken'],
-							streamprofile : "main",
-							label :'主码流',
-							name:item['strName']+"--"+'主码流',
-							iconclass : 'mdi mdi-playlist-play fa-fw',
-							disabled_me:false
-							},{
-							token : item['strToken'],
-							streamprofile : "sub",
-							label :'辅码流',
-							name:item['strName']+"--"+'辅码流',
-							iconclass : 'mdi mdi-playlist-play fa-fw',
-							disabled_me:false
-							}]
-							for(var l=0; l< node.length; l++){
-								console.log("1111111111111111111",node[l].disabled_me)
-								if(item['bDisable'] == true){
-									node[l].disabled_me =true;
-								}
-							}
-							
-							var newItem ={
-									token : item['strToken'],
-									label : item['strName'],
-									iconclass : 'mdi mdi-camcorder fa-fw',
-									iconclass1 : '',
-									name:item['strName']+"--"+'主码流',
-									children:node,
-									disabled_me:false};
-
-							if(!item['bOnline'])
-								newItem['iconclass'] = 'mdi mdi-camcorder-off fa-fw';
-
-							if(item['nType'] == 'H5_CLOUD')
-								newItem['iconclass'] = 'mdi mdi-cloud-upload fa-fw';
-
-							if(item['bRec'] == true)
-									newItem['iconclass2'] = 'iconfont icon-radioboxfill none';
-
-							if(item['bDisable'] == true){
-								newItem['disabled_me'] =true;
-								newItem['iconclass1'] = 'camera';
-							}
-
-						srcGroup.children.push(newItem);
-						}
-						this.data.push(srcGroup);
-					}
-				}).catch(error => {
-					console.log('GetSrc failed', error);
-				});
-			},
-
 	// 区域
 	Regional(){
-		var root = process.env.API_ROOT;
-		if (root == undefined){
-			root = "http://"+this.Useport.ip+":"+this.Useport.port + window.location.pathname;
-		}
+		var root = this.$store.state.callport;
 		var url = root + "/api/v1/GetRegion?session="+this.$store.state.token;
+		console.log(url,this.$store.state.callport,this.Useport,root);
 		this.$http.get(url).then(result=>{
 			var oldarr=result.data.root;
 			
 			var oldarr1=result.data.src;
 			var dataroot=this.getchild(oldarr,oldarr1);
-			// console.log(dataroot);
+			console.log(dataroot);
 			this.camdata.push(dataroot);
-			// console.log(this.camdata)
+			console.log(this.camdata)
 		
 		})
 	},
@@ -558,6 +402,23 @@ methods:{
 <style  scoped>
 .contert{
 	margin: 0 10px;
+}
+/* 视频列表弹框 */
+
+.van_popup{
+	padding: 0px 10px 0 10px;box-sizing: border-box;
+	background-color: #252526;
+}
+.el_tree{
+	color: #C3C3C3 !important;
+	background-color: #252526;
+}
+.el_tree1{
+	color: #C3C3C3 !important;
+	background-color: #252526;
+}
+.el-tree >>>.el-tree-node:focus>.el-tree-node__content{
+	background-color: #2D2D30;
 }
 /* 功能键 */
 .video_but{
@@ -678,7 +539,7 @@ div[name='flex'] {
 }
 .videoClickColor {
     background-color: #616263 !important;
-    opacity: 0.80;
+    opacity: 0.50;
 }
 
 /* 字体图标 */
@@ -762,7 +623,9 @@ div[name='flex'] {
   /* font-size: 26px; */
   color: #6BE7C3;
 }
-
+.flexvideo{
+	z-index: 2014;
+}
 .flexvideo .videoColor{
   border: none;
   background-color: rgb(73, 74, 75) !important;
@@ -832,10 +695,9 @@ div[name='flex'] {
   margin: 20px 0;
 }
 .van-col{
- 
-  font-size:17px;
-  font-weight: 600;
-  color: 10px ;
+	font-size:17px;
+	font-weight: 600;
+	color: 10px ;
 }
 .Collection .favorites p{
    line-height: 0px;
