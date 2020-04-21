@@ -22,7 +22,9 @@ const routes=[
 const Router = new VueRouter({
     routes
   });
-export default Router;  
+if (window.localStorage.getItem('h5stoken')) {
+  store.commit(types.LOGIN, window.localStorage.getItem('h5stoken'))
+}
 //使用端口号
 if (window.localStorage.getItem('h5appport')) {
   
@@ -45,3 +47,5 @@ if (window.localStorage.getItem('h5appportpsw')) {
   store.commit(types.USEPORTPSW, window.localStorage.getItem('h5appportpsw'))
 }
 //1
+
+export default Router; 

@@ -102,17 +102,17 @@ Vue.use(NavBar);
 export default {
  name: 'Login',
  data(){
-     return{
-     checked: true,
-     callport:this.$store.state.callport,//使用端口号//使用端口号
-     value:'hah',
+    return{
+    checked: true,
+    callport:this.$store.state.callport,//使用端口号//使用端口号
+    value:'hah',
     Useport:[{
-            ip:'',
-            port:'',
-            user:'',
-            psw:''
-          }],//端口号
-        }
+        ip:'',
+        port:'',
+        user:'',
+        psw:''
+        }],//端口号
+    }
   },
   computed:{
         count(){
@@ -154,12 +154,12 @@ export default {
           //传入账号名，密码，和保存天数3个参数
          this.setStorage(username,password,Ip,Port)
         //   this.setCookie(username,password,Ip,Port,7);
-      }else{
+        }else{
         //   this.setCookie("","","","",-1);
           localStorage.clear('userName')
           this.checked=false
         }
-        console.log(this.$store.state.Useport.ip)
+        // console.log(this.$store.state.Useport.ip)
         this.$store.commit(types.USEPORTIP, this.Useport.ip)
         this.$store.commit(types.USEPORTPORT, this.Useport.port);
         this.$store.commit(types.USEPORTUSER, this.Useport.user);
@@ -173,20 +173,24 @@ export default {
         //   return false
         this.$http.get(baseurl).then(result => {
             console.log(result)
-        if(result.status == 200){
-        var data = result.data; 
-        _this.$router.push('/liveview');
-        _this.$store.commit(types.LOGIN, data['strSession']);
-        console.log(result) 
-        Toast.success('登录成功');
-        }else{
-          Toast.fail('登录失败');
-        //   this.setCookie("","","","",-1);
-          localStorage.clear('userName')
-        }
+            if(result.status == 200){
+                var data = result.data;
+                if (data.bStatus == true){
+                    // this.$store.commit(types.LOGIN, data["strSession"]);
+                    this.$store.state.token=data["strSession"];
+                    console.log(data["strSession"],this.$store.state.token)
+                    // return false;
+                    _this.$router.push('/liveview');
+                    Toast.success('登录成功');
+                }
+            }else{
+                Toast.fail('登录失败');
+                //   this.setCookie("","","","",-1);
+                localStorage.clear('userName')
+            }
 
-  }).catch()
-  },
+        }).catch()
+    },
 // // 点击复选款
 //  doRemember(event){
 //     let rememberChecked =this.checked
@@ -295,9 +299,6 @@ getStorage(){
        border: none;
     
   }
-  .van-dropdown-menu__item{
-      /* flex:none; */
-  }
 .el-dropdown-link {
     cursor: pointer;
     color: #409EFF;
@@ -330,9 +331,6 @@ getStorage(){
       /* margin:30px 0; */
       /* height: 834px; */
   }
-  .van-col--18{
-      /* position: relative; */
-  }
   .van-col--18 .van-checkbox{
       font-size: 15px;
        color: #B8B8B8 !important;
@@ -351,10 +349,6 @@ color: aquamarine;
 .van-checkbox__icon--checked .van-icon {
     color:aquamarine !important;
     /* background-color: #575757!important; */
-    /* border: none; */
-}
-.van-checkbox__icon .van-icon{
-    /* background-color: #575757 !important; */
     /* border: none; */
 }
 .van-checkbox__icon--round .van-icon{
