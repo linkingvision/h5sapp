@@ -10,8 +10,6 @@ export default {
   components: {
    
   },
-
-      
 }
 </script>
 
@@ -25,6 +23,7 @@ html,body{
 }
 
 #app {
+  width: 100%;
   height: 100%;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -33,4 +32,11 @@ html,body{
   color: #2c3e50;
   /* margin-top: 60px; */
  }
+  .van-overlay{
+    background: none !important;
+  }
+  
+  .van-sticky {
+    z-index: 2050;
+  }
 </style>
