@@ -107,8 +107,11 @@ export default {
     checked: true,
     callport:this.$store.state.callport,//使用端口号//使用端口号
     value:'hah',
+<<<<<<< HEAD
     session:'',
     activeNames:[''],
+=======
+>>>>>>> a3a9e2dd8c86c9ecaf4703b610150bf183769a31
     Useport:[{
         ip:'',
         port:'',
@@ -175,9 +178,15 @@ export default {
             if(result.status == 200){
                 var data = result.data;
                 if (data.bStatus == true){
+<<<<<<< HEAD
                   this.$store.commit(types.LOGIN, data["strSession"]);
                     // this.$store.state.token=data["strSession"];
                     console.log(data["strSession"])
+=======
+                    // this.$store.commit(types.LOGIN, data["strSession"]);
+                    this.$store.state.token=data["strSession"];
+                    console.log(data["strSession"],this.$store.state.token)
+>>>>>>> a3a9e2dd8c86c9ecaf4703b610150bf183769a31
                     // return false;
                     _this.$router.push('/liveview');
                     Toast.success('登录成功');
@@ -190,8 +199,17 @@ export default {
 
         }).catch()
     },
+<<<<<<< HEAD
   // 点击复选款
   //设置cookie
+=======
+// // 点击复选款
+//  doRemember(event){
+//     let rememberChecked =this.checked
+//     this.checked=!rememberChecked
+//   },
+   //设置cookie
+>>>>>>> a3a9e2dd8c86c9ecaf4703b610150bf183769a31
  setCookie(c_name,c_pwd,c_ip,c_port,exdays) {
   var exdate=new Date();//获取时间
   exdate.setTime(exdate.getTime() + 24*60*60*1000*exdays);//保存的天数
@@ -301,6 +319,7 @@ getStorage(){
        border: none;
     
   }
+<<<<<<< HEAD
   .dividerleft>.van-cell{
     padding: 8px 0;
   }
@@ -318,6 +337,8 @@ getStorage(){
  .van-divider{
      margin: 10px 0;
  }
+=======
+>>>>>>> a3a9e2dd8c86c9ecaf4703b610150bf183769a31
 .el-dropdown-link {
     cursor: pointer;
     color: #409EFF;
