@@ -107,4 +107,4 @@ function H5sSnapshot(vid, fileName)
 	document.body.removeChild(dlLink);           
 }
  
-export {H5siOS,H5sPlayerCreate}
+
