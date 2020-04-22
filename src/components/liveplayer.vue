@@ -1,6 +1,10 @@
 <template>
     <div class="h5container">
+<<<<<<< HEAD
         <video class="h5video1" :id="videoid" muted webkit-playsinline playsinline  style= "object-fit: fill;">
+=======
+        <video class="h5video1" :id="videoid" muted webkit-playsinline playsinline poster="./imgs/blank.png" style= "object-fit: fill;">
+>>>>>>> a3a9e2dd8c86c9ecaf4703b610150bf183769a31
         </video>
         <div :id="rtcid" class=""></div>
     </div>
@@ -133,7 +137,11 @@ export default {
                 delete this.h5handler;
                 this.h5handler = undefined;
                 $("#" + this.h5videoid).get(0).load();
+<<<<<<< HEAD
                 // $("#" + this.h5videoid).get(0).poster = './imgs/blank.png';
+=======
+                $("#" + this.h5videoid).get(0).poster = './imgs/blank.png';
+>>>>>>> a3a9e2dd8c86c9ecaf4703b610150bf183769a31
             }
         },
         PlayVideo(token,streamprofile,label,name){
