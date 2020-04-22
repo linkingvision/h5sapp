@@ -52,7 +52,13 @@ export default new Vuex.Store({
    //不知道
     [RECEIVE_PETSINFO](state,{petsInfo}){
       state.petsInfo = petsInfo
-    }
+    },
+   // login
+    [types.LOGIN]:(state, data) => {
+      console.log(data)
+      localStorage.h5stoken = data
+      state.token = data
+    },
   },
   actions,
   getters

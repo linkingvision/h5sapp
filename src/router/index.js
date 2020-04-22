@@ -2,21 +2,36 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '@/components/Login'
 import liveview from '@/components/liveview'
+import setting from '@/components/setting'
+import About from '@/components/About'
 import store from '@/store/index'
 import * as types from '@/store/types'
 Vue.use(VueRouter)
 const routes=[
     {
       path: '/',
-      redirect: '/login'
-     },
+      redirect: '/login',
+      meta: {footShow: false, }
+    },
      {
       path:'/login',
-      component:Login
-     },
+      component:Login,
+      meta: {footShow: false, }
+    },
    {
     path:'/Liveview',
-    component:liveview
+    component:liveview,
+    meta: {footShow: true, }
+   },
+   {
+    path:'/setting',
+    component:setting,
+    meta: {footShow: true, }
+   },
+   {
+    path:'/About',
+    component:About,
+    meta: {footShow: true, }
    }
 ]
 const Router = new VueRouter({
