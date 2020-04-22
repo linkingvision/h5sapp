@@ -12,9 +12,7 @@
 				<div class="flexvideo" id="videoPanel" >
 					<div name='flex' style="position: relative;" class="videoColor" v-for="r in rows" :key="r" @click="showvideo">
 						<div class="palace" name="flex" v-for="c in cols" @contextmenu.prevent="stopVideo($event)" @click="videoClick(r,c,$event)" :key="c">
-							<v-liveplayer v-bind:id="'h'+r+c" :h5id="'h'+r+c" :rows="rows" :cols="cols" :h5videoid="'hvideo'+r+c" >
-
-							</v-liveplayer>
+							<v-liveplayer v-bind:id="'h'+r+c" :h5id="'h'+r+c" :rows="rows" :cols="cols" :h5videoid="'hvideo'+r+c"></v-liveplayer>
 						</div>
 					</div>
 					<div class="Close_flex">
@@ -157,7 +155,6 @@ import {H5siOS,H5sPlayerCreate} from '../assets/js/h5splayerhelper.js'
 import {H5sPlayerWS,H5sPlayerHls,H5sPlayerRTC} from '../assets/js/h5splayer.js'
 import $ from 'jquery'
 import Liveplayer from './liveplayer'
-
 import Vue from 'vue'
 
 //  import "@static/css"
@@ -222,7 +219,7 @@ export default {
 	},
 	created(){
 	  	this.viewHistory = JSON.parse(localStorage.getItem("viewHistory"))
-		// this. history()
+		this. history()
 	},
  
 // 方法
@@ -383,7 +380,8 @@ methods:{
 			let data=this.viewHistory
 			let  videoid=data
 			var  confItem = data[i];
-			// let  videoid=data[i].token
+		     
+            // let  videoid=data[i].token
 			//  confItem.videoid=videoid
 			console.log(confItem)
 			this.h5handler = new H5sPlayerRTC(confItem);
