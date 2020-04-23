@@ -1,6 +1,6 @@
 <template>
     <div class="h5container">
-        <video class="h5video1" :id="videoid" muted webkit-playsinline playsinline  style= "object-fit: fill;">
+        <video class="h5video1" :id="videoid" muted webkit-playsinline playsinline poster="./imgs/blank.png" style= "object-fit: fill;">
         </video>
         <div :id="rtcid" class=""></div>
     </div>
@@ -84,7 +84,6 @@ export default {
         pull(playid){
             var elem = $("#"+playid).get(0);
             //var elem = $("#videoPanel");
-            console.log('panelFullScreen', event);
             if (
             document.fullscreenEnabled ||
             document.webkitFullscreenEnabled ||
@@ -106,11 +105,11 @@ export default {
                     } else if (document.msExitFullscreen) {
                         document.msExitFullscreen();
                     }
-                    console.log("========  updateUIExitFullScreen");
+                    console.log("========  updateUIExitFullScreen开启");
                     this.updateUIExitFullScreen();
                 } else {
-                     console.log('panelFullScreen3');
-
+                     console.log('panelFullScreen3关闭');
+                    $(".h5video1").addClass('mirrorRotateLevel');
                     if (elem.requestFullscreen) {
                         elem.requestFullscreen();
                     } else if (elem.webkitRequestFullscreen) {
@@ -133,7 +132,7 @@ export default {
                 delete this.h5handler;
                 this.h5handler = undefined;
                 $("#" + this.h5videoid).get(0).load();
-                // $("#" + this.h5videoid).get(0).poster = './imgs/blank.png';
+                $("#" + this.h5videoid).get(0).poster = './imgs/blank.png';
             }
         },
         PlayVideo(token,streamprofile,label,name){
@@ -208,6 +207,9 @@ export default {
 </script>
 
 <style scoped>
+    .mirrorRotateLevel {
+        transform: rotateY(180deg);   /* 水平镜像翻转 */
+    }
     .h5container{
         width: 100% ;
         height: 100%;

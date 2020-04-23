@@ -9,23 +9,27 @@
 			<!-- 视频播放部分 -->
 			
 			<van-sticky>
-				<div class="flexvideo" id="videoPanel" >
-					<div name='flex' style="position: relative;" class="videoColor" v-for="r in rows" :key="r" @click="showvideo">
-						<div class="palace" name="flex" v-for="c in cols" @contextmenu.prevent="stopVideo($event)" @click="videoClick(r,c,$event)" :key="c">
-							<v-liveplayer v-bind:id="'h'+r+c" :h5id="'h'+r+c" :rows="rows" :cols="cols" :h5videoid="'hvideo'+r+c"></v-liveplayer>
+				<div id="full">
+					<div class="flexvideo" id="videoPanel" >
+						<div name='flex' style="position: relative;" class="videoColor" v-for="r in rows" :key="r" @click="showvideo">
+							<div class="palace" name="flex" v-for="c in cols" @contextmenu.prevent="stopVideo($event)" @click="videoClick(r,c,$event)" :key="c">
+								<v-liveplayer v-bind:id="'h'+r+c" :h5id="'h'+r+c" :rows="rows" :cols="cols" :h5videoid="'hvideo'+r+c" >
+
+								</v-liveplayer>
+							</div>
 						</div>
-					</div>
-					<div class="Close_flex">
-						<div class="video_funsize">
-							<div class="fun_pull" @click="FullScreen"></div>
-							<span class="fun_coll"></span>
-							<span class="fun_voice"></span>
-							<span>标清</span>
-						</div>
-						<div class="video_funsize1">
-							<span class="fun_onwwin" data-row="1|1" @click="changePanel($event)"></span>
-							<span class="fun_fouwin" data-row="2|2" @click="changePanel($event)"></span>
-							<span @click="close">关闭</span>
+						<div class="Close_flex">
+							<div class="video_funsize">
+								<div class="fun_pull" @click="FullScreen"></div>
+								<span class="fun_coll"></span>
+								<span class="fun_voice"></span>
+								<span>标清</span>
+							</div>
+							<div class="video_funsize1">
+								<span class="fun_onwwin" data-row="1|1" @click="changePanel($event)"></span>
+								<span class="fun_fouwin" data-row="2|2" @click="changePanel($event)"></span>
+								<span @click="close">关闭</span>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -155,6 +159,7 @@ import {H5siOS,H5sPlayerCreate} from '../assets/js/h5splayerhelper.js'
 import {H5sPlayerWS,H5sPlayerHls,H5sPlayerRTC} from '../assets/js/h5splayer.js'
 import $ from 'jquery'
 import Liveplayer from './liveplayer'
+
 import Vue from 'vue'
 
 //  import "@static/css"
@@ -212,6 +217,7 @@ export default {
 	} ,
   // 一进来就要更新的
 	mounted(){
+		
 		console.log("token",this.$store.state.token);
 		this.updateUI();
 	   	this.$root.bus.$emit('liveplayproto',this.proto);
@@ -219,7 +225,7 @@ export default {
 	},
 	created(){
 	  	this.viewHistory = JSON.parse(localStorage.getItem("viewHistory"))
-		this. history()
+		// this. history()
 	},
  
 // 方法
@@ -236,10 +242,79 @@ methods:{
 		this.$root.bus.$emit('liveplayclose',vid,playid);
 	},
 	FullScreen(){
+		
+		
 		console.log("全屏");
-        let playid = 'hvideo' + this.$data.selectRow + this.$data.selectCol;
-		this.$root.bus.$emit('liveplaypull',playid);
-    },
+        // let playid = 'hvideo' + this.$data.selectRow + this.$data.selectCol;
+		// this.$root.bus.$emit('liveplaypull',playid);
+		var elem = $("#full").get(0);
+		if (
+		document.fullscreenEnabled ||
+		document.webkitFullscreenEnabled ||
+		document.mozFullScreenEnabled ||
+		document.msFullscreenEnabled
+		) {
+			if (
+				document.fullscreenElement ||
+				document.webkitFullscreenElement ||
+				document.mozFullScreenElement ||
+				document.msFullscreenElement
+			) {
+				if (document.exitFullscreen) {
+					document.exitFullscreen();
+				} else if (document.webkitExitFullscreen) {
+					document.webkitExitFullscreen();
+				} else if (document.mozCancelFullScreen) {
+					document.mozCancelFullScreen();
+				} else if (document.msExitFullscreen) {
+					document.msExitFullscreen();
+				}
+				console.log("========  updateUIExitFullScreen开启");
+				var width=$(document.body).height();
+				var height=$(document.body).width();
+				$('div[name="flex"]').width(height);
+				$('div[name="flex"]').height(this.contentHeight / this.rows);
+				$("#videoPanel").css({"width":"100%","height":"100%","transform":"none"});
+				// $("#videoPanel").removeClass('mirrorRotateLevel');
+				$("#videoPanel").css('margin-top',"0" );
+      			$("#videoPanel").css('margin-left',"0" );
+				this.updateUIExitFullScreen();
+			} else {
+				var width=$(document.body).height();
+				var height=$(document.body).width();
+				var Closehe=$(".Close_flex").height()
+				$('div[name="flex"]').width(width);
+				$('div[name="flex"]').height(height/ this.rows-Closehe);
+				console.log('panelFullScreen3关闭',width,height,( width- height) / 2, 0 - ( width- height) / 2 );
+				$("#videoPanel").css({"width":width,"height":height,"transform":"rotate(90deg)"});
+				$("#videoPanel").css('margin-top',  ( width- height) / 2 );
+      			$("#videoPanel").css('margin-left',  0 - ( width- height) / 2 );
+
+				// $("#videoPanel").addClass('mirrorRotateLevel');
+
+
+				if (elem.requestFullscreen) {
+					elem.requestFullscreen();
+				} else if (elem.webkitRequestFullscreen) {
+					elem.webkitRequestFullscreen();
+				} else if (elem.mozRequestFullScreen) {
+					elem.mozRequestFullScreen();
+				} else if (elem.msRequestFullscreen) {
+					elem.msRequestFullscreen();
+				}
+			}
+		} else {
+			console.log('Fullscreen is not supported on your browser.');
+		}
+	},
+	updateUIExitFullScreen(){
+		
+		if (!document.fullscreenElement && !document.webkitIsFullScreen && !document.mozFullScreen && !document.msFullscreenElement)
+		{
+			console.log("1251")
+			$('div[name="flex"]').height(this.contentHeight / this.rows);
+		}
+	},
   	//实时视频遮罩层显示和隐藏
 	showvideo(){
 		this.showli = true;
@@ -380,8 +455,7 @@ methods:{
 			let data=this.viewHistory
 			let  videoid=data
 			var  confItem = data[i];
-		     
-            // let  videoid=data[i].token
+			// let  videoid=data[i].token
 			//  confItem.videoid=videoid
 			console.log(confItem)
 			this.h5handler = new H5sPlayerRTC(confItem);
@@ -398,8 +472,14 @@ methods:{
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style  scoped>
+
 .contert{
 	margin: 0 10px;
+}
+/* 全屏 */
+.mirrorRotateLevel {
+	margin: auto auto;
+	/*兼容IE*/
 }
 /* 视频列表弹框 */
 
