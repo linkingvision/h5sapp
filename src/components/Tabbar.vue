@@ -2,7 +2,7 @@
    <div class='tabbar'>
            <!-- 底部导航  -->
         <van-tabbar v-model="activefoot"  active-color="#6BE7C3" inactive-color="#415D56"  :border='false' @change="onChange">
-            <van-tabbar-item>
+            <van-tabbar-item replace to="/Liveview">
                 <van-icon class-prefix="iconfont">&#xe66a;</van-icon>
             </van-tabbar-item>
             <van-tabbar-item>

@@ -186,9 +186,6 @@ export default {
 			activeId: 1,
 			activeIndex: 0,
 			active: 0,
-			items: [{ text: '摄像机',id:''}],
-			items1:[{text:'ha',id:'',children: [{text:'主码流',id:''},{text:'辅码流',id:''}]}],
-			items2:[{text:'摄像机',id:'',children: [{text:'主码流',id:''},{text:'辅码流',id:''}]}],
 			Useport: this.$store.state.Useport,
 			token:'',
 			src:'',
@@ -899,20 +896,6 @@ div[name='flex'] {
   color:#C3C3C3;
   font-size: 12px;
 }
-.imag1{
-  background:url('../assets/luxiang3.png') no-repeat;
-  background-size: 100% 100%;
-}
-
-.imag2{
-  background:url('../assets/icon2 (3).png') no-repeat;
-  background-size: 100% 100%;
-}
-.imag3{
-  background:url('../assets/slices (3).png') no-repeat;
-  background-size: 100% 100%;
-  /* background-size: cover; */
-} 
 .van-tabbar{
   border: none;
   height: 60px;

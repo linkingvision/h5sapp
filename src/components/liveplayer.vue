@@ -174,7 +174,9 @@ export default {
             this.h5handler.connect();
 
             console.log("*******************",conf,this.h5handler)
-            
+            // 储存抓图
+            var Screenshotsurl="http://"+this.$store.state.Useport.ip+":"+this.$store.state.Useport.port + window.location.pathname;
+             
             //  历史记录
             if(localStorage.getItem('viewHistory')==null){
                 let confarr=[conf]
@@ -199,10 +201,8 @@ export default {
             //  在把数组转化成字符串传回本地
             localStorage.setItem("viewHistory",JSON.stringify(playHistory));
             }
-                
-        },
-        
-    }
+         },
+     }
 }
 </script>
 

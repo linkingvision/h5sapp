@@ -19,19 +19,19 @@ const routes=[
       meta: {footShow: false, }
     },
    {
-    path:'/Liveview',
-    component:liveview,
-    meta: {footShow: true, }
+     path:'/Liveview',
+     component:liveview,
+     meta: {footShow: true, }
    },
    {
-    path:'/setting',
-    component:setting,
-    meta: {footShow: true, }
+     path:'/setting',
+     component:setting,
+     meta: {footShow: true, }
    },
    {
-    path:'/About',
-    component:About,
-    meta: {footShow: true, }
+     path:'/About',
+     component:About,
+     meta: {footShow: true, }
    }
 ]
 const Router = new VueRouter({

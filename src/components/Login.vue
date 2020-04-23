@@ -414,7 +414,10 @@ getStorage(){
 }
 /* 按钮 */
  .van-button--block{
-    width: 28%;
+    width: 20%;
+}
+.van-button--primary{
+    background-color: aquamarine;
 }
 .btn{
     margin-top:20px ;
@@ -454,7 +457,7 @@ getStorage(){
       border:none !important;
   } 
 .van-field__control{
-    color:#fff !important;
+    color:#B8B8B8 !important;
 }
 .van-collapse .van-collapse-item{
     border: none;
@@ -470,9 +473,10 @@ getStorage(){
       flex: 0 ; 
 }  */
 .van-checkbox__icon--checked .van-icon {
-    color:aquamarine !important;
+  color:aquamarine !important;
 }
 .van-checkbox span{
+  font-size: 12px;
   color: #B8B8B8!important;
 }
 
