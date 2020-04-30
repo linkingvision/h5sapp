@@ -4,6 +4,10 @@ import Login from '@/components/Login'
 import liveview from '@/components/liveview'
 import setting from '@/components/setting'
 import About from '@/components/About'
+import Androidconfig from '@/components/settconfig/Androidconfig'
+import iosconfig from '@/components/settconfig/iosconfig'
+import Playback from '@/components/Playback'
+import CallPolice from '@/components/CallPolice'
 import store from '@/store/index'
 import * as types from '@/store/types'
 Vue.use(VueRouter)
@@ -24,6 +28,16 @@ const routes=[
      meta: {footShow: true, }
    },
    {
+    path:'/Playback',
+    component:Playback,
+    meta: {footShow: true, }
+  },
+  {
+    path:'/CallPolice',
+    component:CallPolice,
+    meta: {footShow: true, }
+  },
+   {
      path:'/setting',
      component:setting,
      meta: {footShow: true, }
@@ -32,7 +46,17 @@ const routes=[
      path:'/About',
      component:About,
      meta: {footShow: true, }
-   }
+   },
+   {
+    path:'/settconfig/Androidconfig',
+    component: Androidconfig,
+    meta: {footShow: true, }
+  },
+  {
+    path:'/settconfig/iosconfig',
+    component: iosconfig,
+    meta: {footShow: true, }
+  }
 ]
 const Router = new VueRouter({
     routes

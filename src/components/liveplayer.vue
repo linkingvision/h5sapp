@@ -12,7 +12,11 @@ import '../assets/js/adapter.js'
 import {H5sPlayerWS,H5sPlayerRTC} from '../assets/js/h5splayer.js'
 import {H5siOS,H5sPlayerCreate} from '../assets/js/h5splayerhelper.js'
 import $ from 'jquery'
-import { Col } from 'vant'
+import Vue from 'vue';
+import { Col, CouponList } from 'vant'
+import { Toast } from 'vant';
+
+Vue.use(Toast);
 export default {
    name: 'liveplayer',
    props:['h5id', 'h5videoid',"cols","rows"],
@@ -22,11 +26,13 @@ export default {
           h5handler: undefined,//视频内容
           audioback: undefined,
           currtoken: undefined,
-          currtoken:undefined, 
           tokenshou:"",
           rtcid:"rtc"+this.h5videoid, 
           playHistory:[{}],//历史记录
-          playConf:[]
+          playConf:[],
+          captchapath:'',
+          curronRadio:this.$store.state.radio,
+          confimg:''
        }
    },
     beforeDestroy() {
@@ -37,9 +43,10 @@ export default {
             delete this.h5handler;
             this.h5handler = undefined;
         }
-        this.currtoken = undefined;
+            this.currtoken = undefined;
     },
     mounted(){
+        console.log(this.curronRadio)
         let _this=this;
         this.$root.bus.$on('liveplay', function(token,streamprofile,label,name, id){
             console.log(token,streamprofile,label,name, id)
@@ -79,6 +86,19 @@ export default {
                 return false
             }
         });
+        this.$root.bus.$on('liveplayScreenshot', function(vid,Screenshotid){
+         console.log(vid,Screenshotid,_this.videoid,_this.h5id );
+            // 抓图 
+            if(Screenshotid==_this.h5videoid){
+             //console.log("deng")
+              let token=_this.currtoken
+              _this.Screenshoturl(token)
+              console.log(token)
+            }else{
+              return false
+         }
+      });
+    
     },
     methods:{
         pull(playid){
@@ -127,12 +147,13 @@ export default {
         playclose(){
             if (this.h5handler != undefined)
             {
-                console.log("////////////")
+                console.log("////////////",$("#" + this.h5videoid).get(0).load())
                 this.h5handler.disconnect();
                 delete this.h5handler;
                 this.h5handler = undefined;
                 $("#" + this.h5videoid).get(0).load();
                 $("#" + this.h5videoid).get(0).poster = './imgs/blank.png';
+                 this.historyimg()
             }
         },
         PlayVideo(token,streamprofile,label,name){
@@ -162,47 +183,114 @@ export default {
                 token: token,
                 hlsver: 'v1', //v1 is for ts, v2 is for fmp4
                 session: this.$store.state.token, //session got from login,
-                label:label
-            };
+                label:label,
+                };
+            console.log(H5siOS())
             if (H5siOS() === true)
             {
                 this.h5handler = new H5sPlayerRTC(conf);
-            }else
-            {
+            }else if(this.curronRadio==1){   
+                   // 判断是否选中ws播放或者是rtc
+                this.h5handler = new H5sPlayerWS(conf);
+            }else if(this.curronRadio==2){
+                this.h5handler = new H5sPlayerRTC(conf); 
+            }else{
                 this.h5handler = new H5sPlayerWS(conf);
             }
             this.h5handler.connect();
-
             console.log("*******************",conf,this.h5handler)
-            // 储存抓图
-            var Screenshotsurl="http://"+this.$store.state.Useport.ip+":"+this.$store.state.Useport.port + window.location.pathname;
-             
             //  历史记录
-            if(localStorage.getItem('viewHistory')==null){
-                let confarr=[conf]
-                console.log(confarr)
-            // 存储 
-            localStorage.setItem("viewHistory",JSON.stringify(confarr));
-            }else{
-                // 取值
-            let playHistory= JSON.parse(localStorage.getItem("viewHistory"))
-            // 去除重复的
+            // let Screenshotsurl="http://"+this.$store.state.Useport.ip+":"+this.$store.state.Useport.port + "/api/v1/GetImage?token=" +token + "&session=" + this.$store.state.token;
+            // console.log(Screenshotsurl)
+            // // let srcimg=[]
             
-            let index=playHistory.indexOf(conf)
-                if( index>-1){
-            // 删除重复项
-                playHistory.splice(index,1)
-                }
-                playHistory.unshift(conf)
-            //  数据添加后看是否越界
-                if(playHistory.length>6){
-                    playHistory.pop()
-                }
-            //  在把数组转化成字符串传回本地
-            localStorage.setItem("viewHistory",JSON.stringify(playHistory));
-            }
-         },
-     }
+			// this.$http({
+			// 	url: Screenshotsurl,
+			// 	methods: 'get',
+			// 	responseType: 'blob',//接收的值类型
+			// 	}).then((res) => {
+            //        let blob=res.data
+			// 	   let src = window.URL.createObjectURL(blob)//转换为图片路径
+			// 	   console.log(src)
+		      let confitem = {
+                        videoid: this.videoid,
+                        protocol:"http:", //http: or https:
+                        host: wsroot, //localhost:8080
+                        streamprofile: streamprofile, // {string} - stream profile, main/sub or other predefine transcoding profile
+                        rootpath: '/', // '/'
+                        token: token,
+                        hlsver: 'v1', //v1 is for ts, v2 is for fmp4
+                        session: this.$store.state.token, //session got from login,
+                        label:label,
+                        Screenshotimg:''
+                    };
+                console.log(confitem)
+                 if(localStorage.getItem('viewHistory')==null){
+                       let confarr=[confitem]
+                         // 存储 
+                            localStorage.setItem("viewHistory",JSON.stringify(confarr));
+                          }else{
+                           // 取值
+                          let playHistory= JSON.parse(localStorage.getItem("viewHistory"))
+                          // 去除重复的
+                           playHistory= playHistory.filter(item => item.token !== confitem.token);
+                           console.log(playHistory)
+                           playHistory.unshift(confitem)
+                          // 判断是否越界
+                          if(playHistory.length>6){
+                          playHistory.pop()
+                        }
+                         // 在把数组转化成字符串传回本地
+                        localStorage.setItem("viewHistory",JSON.stringify(playHistory));
+                 }
+            // })
+    },
+ Screenshoturl(token){
+     console.log(token)
+    
+    //   储存抓图
+      var Screenshotsurl="http://"+this.$store.state.Useport.ip+":"+this.$store.state.Useport.port + "/api/v1/GetImage?token=" +token + "&session=" + this.$store.state.token;
+       //  请求后台获取抓图
+      this.$http({
+              url: Screenshotsurl,
+              methods: 'get',
+              responseType: 'blob',//接收的值类型
+              }).then((res) => {
+                console.log(res)
+              let blob=res.data
+			    let imgURL= window.URL.createObjectURL(blob)//转换为图片路径
+			    console.log(imgURL)
+			    let fileName='1'
+                const dataImg= new Date();  //filename名称截取
+                fileName =token + '_' + dataImg.getFullYear() + '-' + (dataImg.getMonth() + 1)+ '-' + dataImg.getDate() + '-' + dataImg.getHours() + ':' + dataImg.getMinutes() + ':' + dataImg.getSeconds();
+               var dlLink = document.createElement('a');
+                   dlLink.download = fileName;
+				   dlLink.href = imgURL;
+            //dlLink.dataset.downloadurl = [MIME_TYPE, dlLink.download, dlLink.href].join(':');
+                   document.body.appendChild(dlLink);
+				   dlLink.click();
+                   document.body.removeChild(dlLink);
+                   console.log(imgURL)
+                   this.$store.commit(types.imgURL,dataImg );
+        	
+        }).catch(()=>{
+            // Toast.fail('请选择抓图对象');    
+       })
+           
+    },
+ 
+//  base64ToBlob (code) {
+//         let parts = code.split(';base64,');
+//         let contentType = parts[0].split(':')[1];
+//         let raw = window.atob(parts[1]);
+//         let rawLength = raw.length;
+//         let uInt8Array = new Uint8Array(rawLength);
+//         for (let i = 0; i < rawLength; ++i) {
+//         uInt8Array[i] = raw.charCodeAt(i);
+//   }
+//    return new window.Blob([uInt8Array], {type: contentType, name: 'file_' + new Date().getTime() + '.jpg'});
+// },
+}
 }
 </script>
 

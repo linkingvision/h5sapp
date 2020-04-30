@@ -7,7 +7,6 @@
 				<span class="livespan">实时</span>视频
 			</div>
 			<!-- 视频播放部分 -->
-			
 			<van-sticky>
 				<div id="full">
 					<div class="flexvideo" id="videoPanel" >
@@ -21,14 +20,14 @@
 						<div class="Close_flex">
 							<div class="video_funsize">
 								<div class="fun_pull" @click="FullScreen"></div>
-								<span class="fun_coll"></span>
+								<span class="fun_coll" @click="Favorites"></span>
 								<span class="fun_voice"></span>
 								<span>标清</span>
 							</div>
 							<div class="video_funsize1">
 								<span class="fun_onwwin" data-row="1|1" @click="changePanel($event)"></span>
 								<span class="fun_fouwin" data-row="2|2" @click="changePanel($event)"></span>
-								<span @click="close">关闭</span>
+								<span @click="close()">关闭</span>
 							</div>
 						</div>
 					</div>
@@ -38,9 +37,17 @@
 				<!-- 功能按钮 -->
 				<div class="video_but">
 					<div class="fun_videotape"></div>
-					<span class="fun_Screenshots"></span>
+					<span class="fun_Screenshots" @click="Screenshotsurl"></span>
 					<span class="fun_yuntai"></span>
 				</div>
+				<!-- 截图遮罩层 -->
+				<van-overlay :show="showscreenshot" z-index="99999">
+					<div id='Screenshotid' class="wrapper" @click.stop>
+						<div class="block" @click="showscreenshotver">
+							<img id='downImg' :src="dataurl" alt="">
+						</div>
+					</div>
+				</van-overlay>
 				<!-- 最近浏览 -->
 				<div class="Recentlybrowse">
 					<van-row>
@@ -49,19 +56,19 @@
 					<van-col span="2">...</van-col>
 					</van-row>
 					<!-- 最近浏览轮播图 -->
-					<van-swipe :loop="false" :width="140">
-					<van-swipe-item v-for="(item, index) in viewHistory" :key="index" @click="history(item)">
-						<video :id="item.token" width="130" height="100" autoplay  style="background-color:#000000" ></video>
+					<van-swipe :loop="false" :width="140" :show-indicators='false'>
+					<van-swipe-item  v-for="(item, index) in viewHistory" :key="index"  @click="changePanelhistory($event,item)">
+                        <video  width="125" height="70" autoplay  style="background-color:#000000" :poster='item.Screenshotimg'></video>
 					</van-swipe-item>
 					</van-swipe>
 				</div>
 				<!-- 收藏夹 -->
-				<van-row>
+				<van-row class="Favorites">
 					<van-col span="11">收藏夹</van-col>
 					<van-col span="11"></van-col>
 					<van-col span="2">...</van-col>
 				</van-row>
-				<div class="Collection">
+				<!-- <div class="Collection">
 					<van-row type="flex" justify="end">
 						<van-col span="23"> 
 							<van-row>
@@ -78,23 +85,7 @@
 							</van-row>
 						</van-col>
 					</van-row>
-						<van-row type="flex" justify="end">
-						<van-col span="23"> 
-							<van-row>
-								<van-col span="16" class="favorites">
-									<p>海康枪机</p>
-									<span> 20200305  20：35</span>
-								</van-col>
-								<van-col span="1"></van-col>
-								<van-col span="7" class="videoElement">
-									<div class="favoritesplay">
-									<video class="h5video2" id="videoElement"  autoplay  style="background-color:#000000" webkit-playsinline playsinline></video>
-									</div>
-								</van-col>
-							</van-row>
-						</van-col>
-					</van-row>
-				</div>
+				 </div> -->
 				<!-- 资源列表 -->
 				<van-row class="resource">
 					<van-col span="11">资源列表</van-col>
@@ -159,9 +150,12 @@ import {H5siOS,H5sPlayerCreate} from '../assets/js/h5splayerhelper.js'
 import {H5sPlayerWS,H5sPlayerHls,H5sPlayerRTC} from '../assets/js/h5splayer.js'
 import $ from 'jquery'
 import Liveplayer from './liveplayer'
+import html2canvas from 'html2canvas'
 
 import Vue from 'vue'
+import { Overlay } from 'vant';
 
+Vue.use(Overlay);
 //  import "@static/css"
 // import { NavBar } from 'vant';
 export default {
@@ -171,6 +165,7 @@ export default {
     },
 	data () {
 		return {
+			showscreenshot:false,
 			showli: false,
 			rc:13,
 			selectCol: 1,
@@ -209,22 +204,29 @@ export default {
 			},
 			activefoot:'',
 			value:'',
-			viewHistory:[]
+			viewHistory:'',
+			img:[''],
+			dataurl:'',
+			h5videoid:'',
+			Screen
 		}
 	} ,
   // 一进来就要更新的
 	mounted(){
-		
 		console.log("token",this.$store.state.token);
 		this.updateUI();
 	   	this.$root.bus.$emit('liveplayproto',this.proto);
 		this.Regional()
-	},
+        console.log(this.viewHistory)
+	 },
 	created(){
-	  	this.viewHistory = JSON.parse(localStorage.getItem("viewHistory"))
-		// this. history()
+		// this.viewHistory=JSON.parse(localStorage.getItem("viewHistory"))
+		// console.log(this.viewHistory)	
+		// console.log(this.viewHistory)
+		this.historyimg()
+		// console.log(this.viewHistory)
 	},
- 
+
 // 方法
 methods:{
 	//弹出曾
@@ -239,9 +241,7 @@ methods:{
 		this.$root.bus.$emit('liveplayclose',vid,playid);
 	},
 	FullScreen(){
-		
-		
-		console.log("全屏");
+	   console.log("全屏");
         // let playid = 'hvideo' + this.$data.selectRow + this.$data.selectCol;
 		// this.$root.bus.$emit('liveplaypull',playid);
 		var elem = $("#full").get(0);
@@ -318,7 +318,7 @@ methods:{
 		if(this.show===false){
 		this.show=true
 		}else{
-			this.show=false
+		this.show=false
 		}
 	},
 	//四宫格的高
@@ -337,23 +337,30 @@ methods:{
 	},
 	//点击宫格
 	changePanel(event) {
+		console.log(event)
 		let data = $(event.target).data('row');
-		let _this = this;
+		// console.log(data)
+	    let _this = this;
 		let cols = data.split('|')[1];
 		let rows = data.split('|')[0];
 		//this.map.clear();
-		Object.assign(this.$data, {
+		Object.assign(_this.$data, {
 			rows: parseInt(rows),
 			cols: parseInt(cols)
 		});
 		Vue.nextTick(function () {
 			//$('div[name="flex"]').height(($(".content").height() - 50) / rows);
 			$('div[name="flex"]').height(_this.contentHeight / rows);
+			console.log($('div[name="flex"]'))
 		})
 	},
+
+
 	videoClick(r, c, $event) {
 		this.selectCol = c;
 		this.selectRow = r;
+		 let h5video='hvideo'+r+c
+		 this.h5videoid=h5video
 		console.log(r, c,$($event.target).parent().hasClass('videoClickColor'));
 		if ($($event.target).parent().hasClass('videoClickColor')) {
 			$($event.target).parent().removeClass('videoClickColor');
@@ -361,7 +368,7 @@ methods:{
 			$('#videoPanel div[class*="videoClickColor"]').removeClass('videoClickColor');
 			$('#videoPanel>div').eq(r - 1).children('div').eq(c - 1).addClass('videoClickColor');
 		}
-	},
+  },
 	stopVideo(event){
 		return;
 	},
@@ -373,10 +380,11 @@ methods:{
 		// var main="main"
 		if (data.strToken) {
 			let vid = 'h' + _this.$data.selectRow + _this.$data.selectCol;
-			console.log("----------------------", data.strToken,data.streamprofile, data.name,data.strName, vid);
+            console.log("----------------------", data.strToken,data.streamprofile, data.name,data.strName, vid);
 			// return false;
 			_this.$root.bus.$emit('liveplay', data.strToken,data.streamprofile, data.name,data.strName, vid);
 		}
+
 	},
 	// 区域
 	Regional(){
@@ -436,38 +444,110 @@ methods:{
 		}
 		return arr;
 	},
-	//  历史记录
-	history(event){
-		console.log(event)
+	    // 历史记录播放
+	changePanelhistory(event,item) {
+		console.log(event)	
+		 let _this = this;
+		 let vid = 'h' + _this.$data.selectRow + _this.$data.selectCol;
+		 let playid = 'hvideo' + this.$data.selectRow + this.$data.selectCol;
+		 _this.$root.bus.$emit('liveplay', item.token,item.streamprofile, item.name,item.strName, vid);
 		var root = process.env.API_ROOT;
 		var wsroot = process.env.WS_HOST_ROOT;
 		if (root == undefined){
 			root = "http://"+this.$store.state.Useport.ip+":"+this.$store.state.Useport.port + window.location.pathname;
 		}
-		if (wsroot == undefined)
-		{
-			wsroot = this.$store.state.Useport.ip+":"+this.$store.state.Useport.port;
-		}
-		for(let i=0; i<this.viewHistory.length; i++){
-			let data=this.viewHistory
-			let  videoid=data
-			var  confItem = data[i];
-			// let  videoid=data[i].token
-			//  confItem.videoid=videoid
-			console.log(confItem)
-			this.h5handler = new H5sPlayerRTC(confItem);
-			$("#"+this.rtcid).addClass("rtc_new");
-			this.h5handler = new H5sPlayerWS(confItem);
-		}
-		this.h5handler.connect();
+	    let conf = {
+                videoid: 'playid',
+                protocol:"http:", //http: or https:
+                host: item.host, //localhost:8080
+                streamprofile:item.streamprofile, // {string} - stream profile, main/sub or other predefine transcoding profile
+                rootpath:item.rootpath, // '/'
+                token: item.token,
+                hlsver: item.hlsver, //v1 is for ts, v2 is for fmp4
+                session: item.session, //session got from login,
+                label: item.label,
+                };
+	   this.h5handler = new H5sPlayerRTC(conf);
+	   $("#"+this.rtcid).addClass("rtc_new");
+	   this.h5handler = new H5sPlayerWS(conf);
+	   this.h5handler.connect();
 	},
-	//  码流
-	}
+    historyimg(){
+	   // 储存抓图
+	   let srcimg=[]
+	   let Screen=JSON.parse(localStorage.getItem("viewHistory"))
+		Screen.forEach((value,index,arr)=>{
+			let token=value.token
+			console.log(token )
+		// return false
+		    let Screenshotsurl="http://"+this.$store.state.Useport.ip+":"+this.$store.state.Useport.port + "/api/v1/GetImage?token=" +token + "&session=" + this.$store.state.token;
+			console.log(Screenshotsurl)
+			this.$http({
+				url: Screenshotsurl,
+				methods: 'get',
+				responseType: 'blob',//接收的值类型
+				}).then((res) => {
+				let blob=res.data
+				let src = window.URL.createObjectURL(blob)//转换为图片路径
+				console.log(src)
+					// srcimg.push(src)+"<br/>"
+					srcimg.splice(0,0,src) 
+				    this.$nextTick(() => {
+			        console.log(srcimg)
+			        let dataimg=Screen.map(function(item,index,array){
+						return {
+								hlsver: item.hlsver,
+								host: item.host,
+								label:item.label,
+								protocol:item.protocol,
+								rootpath:item.rootpath,
+								session:item.session,
+								token: item.token,
+								videoid: item.videoid,
+								Screenshotimg:srcimg[index]
+							}
+					 })
+				 this.viewHistory=dataimg
+				console.log(dataimg)
+			})
+		 }) 
+	 })
+	},
+	Screenshotsurl(){
+		// this.showscreenshot=true
+	  	let vid = 'h' + this.$data.selectRow + this.$data.selectCol;
+		let Screenshotid = 'hvideo' + this.$data.selectRow + this.$data.selectCol;
+		 this.$root.bus.$emit('liveplayScreenshot', vid,Screenshotid);
+    },
+ getBlob (canvas) { //获取blob对象
+     let dataUrl= canvas.toDataURL("image/jpeg");
+     let blob =this.base64ToBlob(dataUrl)
+    },
+ base64ToBlob (code) {
+	let parts = code.split(';base64,');
+	let contentType = parts[0].split(':')[1];
+	let raw =window.decodeURIComponent(window.atob(parts[1]))
+	let rawLength = raw.length;
+	let uInt8Array = new Uint8Array(rawLength);
+	for (let i = 0; i < rawLength; ++i) {
+		uInt8Array[i] = raw.charCodeAt(i);
+  }
+  return new window.Blob([uInt8Array], {type: contentType, name: 'file_' + new Date().getTime() + '.jpg'});
+},
+
+   showscreenshotver(){
+		 this.showscreenshot=false
+	 },
+	// 收藏夹
+	Favorites(){
+		console.log(1)
+	   // 当点击星号标的时候星号标显示高亮
+     }
+    // ---------------------------------------------------//
+ }
 }
 
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style  scoped>
 
 .contert{
@@ -571,26 +651,40 @@ methods:{
 	background-size: 100%;
 }
 
+.wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+ .block {
+    /* width: 80%px; */
+    height:100%px;
+    background-color: #fff;
+  }
+ .block img{
+	 display:block;
+	 width: 100%;
+	 height: 100%;
+ }
 
-
-
-html{
-height: 100%;
-background-color: #252527;
-} 
-body{
-width: 100%;
-height: 100%;
-padding:0;
-margin: 0;
-background-color: #252527;
+  html{
+     height: 100%;
+     background-color: #252527;
+  } 
+  body{
+	width: 100%;
+	height: 100%;
+	padding:0;
+	margin: 0;
+	background-color: #252527;
 }
-h1, h2 {
-  font-weight: normal;
+  h1, h2 {
+    font-weight: normal;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
+  ul {
+    list-style-type: none;
+    padding: 0;
 }
 li {
   display: inline-block;
@@ -616,7 +710,13 @@ div[name='flex'] {
     background-color: #616263 !important;
     opacity: 0.50;
 }
-
+.Favorites{
+ margin-top:10px ;
+}
+/* 收藏夹 */
+.Favorites>.van-col{
+   color:#747475 ;
+}
 /* 字体图标 */
 @font-face {
   font-family: 'iconfont';
@@ -627,15 +727,7 @@ div[name='flex'] {
       url('../assets/icon/iconfont.ttf') format('truetype'),
       url('../assets/icon/iconfont.svg#iconfont') format('svg');
 }
-@font-face {
-  font-family: 'iconfont2';
-  src: url('../assets/icon/font/iconfont.eot');
-  src: url('../assets/icon/font/iconfont.eot?#iefix') format('embedded-opentype'),
-      url('../assets/icon/font/iconfont.woff2') format('woff2'),
-      url('../assets/icon/font/iconfont.woff') format('woff'),
-      url('../assets/icon/font/iconfont.ttf') format('truetype'),
-      url('../assets/icon/font/iconfont.svg#iconfont') format('svg');
-}
+
 .iconfont {
   font-family: "iconfont" !important;
   font-size: 20px;
@@ -643,13 +735,7 @@ div[name='flex'] {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-.iconfont2{
-  font-family: "iconfont2" !important;
-  font-size: 20px;
-  font-style: normal;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+
 .iconfont-extra::before {
   content: '\e626';
 }
@@ -662,7 +748,7 @@ div[name='flex'] {
   padding-bottom: 64px;
 }
 .liveinfo{
-  height: 1000px;
+  /* height: 1000px; */
   /* background-color: rgb(17, 68, 83); */
  }
 .liveinfo{
@@ -730,27 +816,6 @@ div[name='flex'] {
    vertical-align: middle;
    font-size: 10px;
 }
-.van-overlay .van-row  .van-button--mini{
-  min-width: 0;
-  font-size: 10px;
-  color: #E7E6E6;
-  background-color: #252526;
-  line-height: 0;
-  border: none;
- 
-}
-.van-overlay .van-row  .van-col--9  {
-  text-align: right;
-  width:31.5%
-}
-.van-overlay .van-row  .van-col--15{
-  width:68.5%
-}
-.van-overlay .van-row  .van-col--9 .van-icon{
-  padding: 0;
-  margin-right:14px;
-  vertical-align: middle;
-}
 
 .liveplaybutton .van-row .van-col--8{
   /* width: 30%; */
@@ -780,56 +845,56 @@ div[name='flex'] {
    text-indent:0;
 }
 .Collection .favorites span{
-  color: #706F74;
-  font-size: 15px;
+   color: #706F74;
+   font-size: 15px;
 }
 .Collection .favorites{
-  padding-top: 10px;
+   padding-top: 10px;
 }
 .Collection .videoElement{
    height:78px;
    position: relative;
 }
 .Collection .videoElement .favoritesplay{
-  height:100%;
-  width:100%px;
-  position:absolute;
-  right: 0;
-  top: -4px;
+   height:100%;
+   width:100%px;
+   position:absolute;
+   right: 0;
+   top: -4px;
   }
 .Collection .videoElement .favoritesplay .h5video2{
-  width: 100%;
-  height: 100%;
+   width: 100%;
+   height: 100%;
 }
 .van-col--23{
-  width: 97.833333%;
-  margin-top:25px;
+   width: 97.833333%;
+   margin-top:25px;
    padding-left: 17px;
    height: 70px;
    background-color: rgb(56, 53, 53);
 }
 
 .van-swipe{
-  margin-top: 15px;
-  height: 130px;
+   margin-top: 15px;
+  /* height: 130px; */
 }
 .h5videoh{
-  border: 1px solid #f44336 !important;
-  box-sizing: border-box;
-  width: 748px;
-  height: 422px;
-  -moz-box-sizing:border-box;
-  -webkit-box-sizing:border-box;
+   border: 1px solid #f44336 !important;
+   box-sizing: border-box;
+   width: 748px;
+   height: 422px;
+   -moz-box-sizing:border-box;
+   -webkit-box-sizing:border-box;
 }
 .van-grid-item__content{
-  background-color:#252526 !important;
+   background-color:#252526 !important;
 
 }
 /* 资源列表 */
- .el_tree{
-    color: #606266;
-    font-size: 14px;
-    font-weight: 500;
+.el_tree{
+   color: #606266;
+   font-size: 14px;
+   font-weight: 500;
     /* background-color:transparent !important; */
 }
 .el-tree-node__content:hover{
@@ -837,16 +902,16 @@ div[name='flex'] {
 }
 
 .el_tree1{
-    margin: 0;
-    margin-right: 10px;
+   margin: 0;
+   margin-right: 10px;
 }
 .el_tree >>> .el-tree-node__content{
-    min-height: 24px;
-    height: auto;
-     background-color: transparent;
+   min-height: 24px;
+   height: auto;
+   background-color: transparent;
 }
 #device span{
-  font-size: 12px;
+   font-size: 12px;
 }
 /* 设备显示和隐藏 */
 .devicetoog{
@@ -860,60 +925,60 @@ div[name='flex'] {
     background-color:transparent;
    
   }
-#device1,#device{
-  padding-bottom: 57px;
+ #device1,#device{
+    padding-bottom: 57px;
 
 }
-.van-tree-select__nav,
-.van-tree-select__nav-item
+ .van-tree-select__nav,
+ .van-tree-select__nav-item
 {
-  background-color:transparent;
+    background-color:transparent;
 }
 .van-sidebar-item:active{
-   background-color:#817E81;
+    background-color:#817E81;
 }
 .van-tree-select__content{
-  background-color: #2D2D31;
+    background-color: #2D2D31;
 }
 .van-tree-select__content .van-tree-select__nav{
-  background-color: #2D2D31;
-  border-right:1px solid #252526;
+    background-color: #2D2D31;
+    border-right:1px solid #252526;
 }
 /* .van-tree-select__content .van-sidebar-item--select {
   background-color:transparent;
 } */
 .van-sidebar-item{
-  border: none;
+    border: none;
 }
 .van-list{
-  padding-bottom:64px;
+    padding-bottom:64px;
 }
 .van-list  .van-cell {
-  background-color:#252526;
+    background-color:#252526;
   
 }
 .van-list .van-cell .van-col--8{
-  color:#C3C3C3;
-  font-size: 12px;
+    color:#C3C3C3;
+    font-size: 12px;
 }
 .van-tabbar{
-  border: none;
-  height: 60px;
-  background-color: rgba(0, 0, 0, 0.4);
+    border: none;
+    height: 60px;
+    background-color: rgba(0, 0, 0, 0.4);
 }
 .van-tabbar-item{
-  background-color: rgba(0, 0, 0, 0.4);
- border: none;
+    background-color: rgba(0, 0, 0, 0.4);
+    border: none;
 }
 .van-tabbar-item__icon {
-  margin-bottom: 1px;
-  font-size: 20px;
+    margin-bottom: 1px;
+    font-size: 20px;
 }
 .van-tabbar .van-tabbar-item .vanicon{
-   font-size: 25px;
+    font-size: 25px;
 }
 .van-tree-select{
-  margin-bottom:40px;
-}
+    margin-bottom:40px;
+} 
 
 </style>

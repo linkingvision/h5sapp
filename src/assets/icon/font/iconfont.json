@@ -6,6 +6,69 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "2727669",
+      "name": "防盗报警",
+      "font_class": "burglar-alarm",
+      "unicode": "e655",
+      "unicode_decimal": 58965
+    },
+    {
+      "icon_id": "6204765",
+      "name": "系统维护",
+      "font_class": "xitongweihu",
+      "unicode": "e650",
+      "unicode_decimal": 58960
+    },
+    {
+      "icon_id": "1004676",
+      "name": "播放4",
+      "font_class": "bofang4",
+      "unicode": "e656",
+      "unicode_decimal": 58966
+    },
+    {
+      "icon_id": "634534",
+      "name": "视频_video161",
+      "font_class": "shipinvideo161",
+      "unicode": "e6d9",
+      "unicode_decimal": 59097
+    },
+    {
+      "icon_id": "14303339",
+      "name": "关闭",
+      "font_class": "guanbi",
+      "unicode": "e74a",
+      "unicode_decimal": 59210
+    },
+    {
+      "icon_id": "647455",
+      "name": "播放",
+      "font_class": "bofang1",
+      "unicode": "e653",
+      "unicode_decimal": 58963
+    },
+    {
+      "icon_id": "515328",
+      "name": "视频_video162",
+      "font_class": "shipinvideo162",
+      "unicode": "e6c0",
+      "unicode_decimal": 59072
+    },
+    {
+      "icon_id": "2727654",
+      "name": "实时报警",
+      "font_class": "real-time-alarm",
+      "unicode": "e64f",
+      "unicode_decimal": 58959
+    },
+    {
+      "icon_id": "7001721",
+      "name": "系统管理",
+      "font_class": "xitongguanli",
+      "unicode": "e683",
+      "unicode_decimal": 59011
+    },
+    {
       "icon_id": "2045799",
       "name": "厅内半球摄像机",
       "font_class": "tingneibanqiushexiangji",

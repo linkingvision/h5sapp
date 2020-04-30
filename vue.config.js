@@ -25,9 +25,15 @@ module.exports = {
   },
 // 字体自适应
 css: {
+  // sourceMap:false,
   loaderOptions: {
       postcss: {
           plugins: [
+            // autoprefixer(),
+            // pxtorem({
+            //   rootValue:37.5,
+            //   propList: ['*']
+            // }),
               require('postcss-plugin-px2rem')({
                   // 换算基数， 默认100  ，这样的话把根标签的字体规定为1rem为50px,这样就可以从设计稿上量出多少个px直接在代码中写多上px了。
                   // rootValue: 37.5, 
@@ -65,7 +71,7 @@ css: {
         maxAssetSize: 30000000,
         //只给出 js 文件的性能提示
         assetFilter: function(assetFilename) {
-            return assetFilename.endsWith('.js');
+            return assetFilename.endsWith('.css')|assetFilename.endsWith('.js');
         }
     },
     

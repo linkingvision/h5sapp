@@ -14,13 +14,15 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     //使用端口号
-    callport:"",
+   callport:"",
     Useport:{
       ip:" ",
       port:" ",
       user:" ",
       psw:""
-    },//查看端口号
+     },//查看端口号
+     radio:1,
+     imgURL:''
 },
   mutations: {
     [types.USEPORT]: (state, data) => {
@@ -58,6 +60,14 @@ export default new Vuex.Store({
       console.log(data)
       localStorage.h5stoken = data
       state.token = data
+    },
+    [types.RADIO]:(state, data) => {
+      console.log(data)
+      state.radio = data
+    },
+    [types.RADIO]:(state, data) => {
+      console.log(data)
+      state.imgURL = data
     },
   },
   actions,

@@ -6,3 +6,5 @@ export const USEPORTUSER="Useportuser"
 export const USEPORTPSW="Useportpsw"
 
 export const USEPORT="Useport"
+export const RADIO="radio"
+export const  IMGURL="imgURL"

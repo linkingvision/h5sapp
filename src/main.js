@@ -6,11 +6,12 @@ import 'element-ui/lib/theme-chalk/index.css';
 import App from './App'
 import store from './store'
 import $ from 'jquery'
+import Html2canvas from 'html2canvas';
+Vue.prototype.html2canvas = Html2canvas;
+
 Vue.prototype.$ = $;
 window.jQuery=$;
 window.$=$
-
-// import "@/amfe-flexible/index.js";
 // import axios from '@/http'
 
 // const routerPush = router.prototype.push

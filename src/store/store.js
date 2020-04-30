@@ -16,6 +16,7 @@ export default new Vuex.Store({
     watermarkstring:"linkingvision",
     watermarktoggle:"",
     conference:"",
+    // radio=''
   },
   mutations: {
     [types.LOGIN]:(state, data) => {

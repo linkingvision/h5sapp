@@ -3,7 +3,7 @@
        
      <van-row type="flex" class="img">
             <van-col span="24" class="header">
-                 <h1>H5SAPP</h1>
+                 <span class="loginimg"></span>
                  <P>您可以在这里完成快速登录</P>
                 <!-- <img src="../assets/mipmap-mdpi3.png" alt=""> -->
             </van-col>
@@ -35,7 +35,7 @@
                                              <van-field :border='false'  placeholder="请填写服务地址"  v-model="Useport.ip"  name="服务器" type="text"   left-icon="stop" :rules="[{ required: true, message: '请填写' }]"/>
                                           </van-col>
                                           <van-col span="9" class="divider" >
-                                              <van-field :border='false'  placeholder="服务端口" name="服务器端口" v-model="Useport.port" type="text"   :rules="[{ required: true, message: '请填写端口' }]"/>
+                                              <van-field :border='false'  placeholder="端口" name="服务器端口" v-model="Useport.port" type="text"   :rules="[{ required: true, message: '请填写端口' }]"/>
                                           </van-col>
                                        </van-row>
                                  </van-collapse-item>
@@ -54,7 +54,7 @@
                             <van-col span="3"></van-col>
                             <van-col span="18" >
                                 <van-button round block class="jumpBtn" id='jumpBtnid' type='primary'  size="large" native-type="submit">
-                                    <van-icon name="success"/>
+                                     <van-icon name="success"/>
                                 </van-button>
                             </van-col>
                             <van-col span="3"></van-col>
@@ -67,7 +67,7 @@
 </template>
 
 <script>
-// import '../assets/js/jQuery.md5.js'
+import '../assets/js/jQuery.md5.js'
 import Vue from 'vue'
 import * as types from '@/store/types'
 import $ from 'jquery'
@@ -123,19 +123,13 @@ export default {
         }
     },
   created(){
-        // 在页面加载时从cookie获取登录信息
-        // let account = this.getCookie("account")
-        // let password = Base64.decode(this.getCookie("password"))
-        // this.getCookie()
-     this.getStorage()
+   this.getStorage()
   },
    mounted(){
 //    this.getCookie()
    $('#drawpdown').hide()
     console.log(this.$store.state.Useport)
-  if(this.Useport.ip !==''||this.Useport.port !==''){
-      
-    }
+  if(this.Useport.ip !==''||this.Useport.port !==''){ }
   },
   methods: {
     // 提交触发表单
@@ -172,23 +166,18 @@ export default {
         //   return false
         this.$http.get(baseurl).then(result => {
             console.log(result)
-            if(result.status == 200){
-                var data = result.data;
-                if (data.bStatus == true){
-                  this.$store.commit(types.LOGIN, data["strSession"]);
-                    // this.$store.state.token=data["strSession"];
-                    console.log(data["strSession"])
-                    // return false;
-                    _this.$router.push('/liveview');
-                    Toast.success('登录成功');
-                }
-            }else{
-                Toast.fail('登录失败');
-                //   this.setCookie("","","","",-1);
-                localStorage.clear('userName')
-            }
-
-        }).catch()
+            var data = result.data;
+            if (data.bStatus == true){
+             this.$store.commit(types.LOGIN, data["strSession"]);
+             // this.$store.state.token=data["strSession"];
+             console.log(data["strSession"])
+             // return false;
+             _this.$router.push('/liveview');
+             Toast.success('登录成功');
+           }
+         }).catch(err=>{
+           Toast.fail('请输入正确账号和密码及配置！')
+         })
     },
   // 点击复选款
   //设置cookie
@@ -225,7 +214,7 @@ getStorage(){
 },
  getCookie() {
  if (document.cookie.length>0) {
-   var arr=document.cookie.split('; ');//这里显示的格式需要切割一下自己可输出看下
+   var arr=document.cookie.split('; ');
    console.log(arr)
    for(var i=0;i<arr.length;i++){
     var arr2=arr[i].split('=');//再次切割
@@ -263,15 +252,17 @@ getStorage(){
      background-size:100% 100%;
      position: relative;
 }
-.header>h1{
-   color:#C2C2C2 ;
-   font-size:50px;
-   line-height: 12px;
-   font-weight: 700;
-   text-indent: 10px;
+.header>span{
+   display: block;
+   height: 50px;
+   width:228px;
+   background: url('../assets/image/loginimg.png');
+   background-size:100% 100%; 
+   margin-left: 10px;
+   
 }
 .header>p{
-   color: #B8B8B8;
+   color: #4E4E4E;
    font-size: 15px;
    font-weight: 700;
    text-indent: 10px;
@@ -302,10 +293,11 @@ getStorage(){
     
   }
   .dividerleft>.van-cell{
-    padding: 8px 0;
+      padding: 8px 0;
   }
  .divider>.van-cell{
      border-left:1px solid #FFF ;
+     padding: 8px;
      padding-left:12px;
  }
  .van-collapse-item__content .van-cell{
@@ -414,7 +406,8 @@ getStorage(){
 }
 /* 按钮 */
  .van-button--block{
-    width: 20%;
+    width:45px;
+    height:45px;
 }
 .van-button--primary{
     background-color: aquamarine;

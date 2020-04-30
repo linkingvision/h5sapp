@@ -6,7 +6,7 @@
                   <div class="beijing">
                      <span class="setLogo"></span>
                   </div>
-                  <span>ADMIN</span>
+                  <span>{{this.$store.state.Useport.user}}</span>
               </van-col>
               <van-col span="9" @click="logout">
                   <div class="source"></div>
@@ -19,7 +19,7 @@
               <i class="sysem"></i>
               <span>系统设置</span>
          </van-col>
-        <van-col span="8" offset="6">
+        <van-col span="8" offset="6" @click="systemconfig">
             <i class="trim"></i>
         </van-col>
      </van-row> 
@@ -80,17 +80,30 @@ export default {
  console.log(1)
 },
  methods:{
-logout(){
+ logout(){
    this.dialogVisible=true
 },
-Confirm(){
+ Confirm(){
     this.dialogVisible=true
     this.$router.push('/Login')
 },
 // 关于我们
-About(){
+ About(){
    this.$router.push('/About')
-  }
+  },
+ systemconfig(){
+    console.log(1)
+   // 判断是安卓还是iOS
+   let u = navigator.userAgent;
+   console.log(u)
+   if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1) {//安卓手机
+      this.$router.push('/settconfig/Androidconfig')
+   } else if (u.indexOf('iPhone') > -1) {//苹果手机
+      this.$router.push('/settconfig/iosconfig')
+   }
+   // this.$router.push('/settconfig/Androidconfig')
+ }
+//  -------------
  }
 }
 </script>
@@ -113,32 +126,36 @@ About(){
 }
 .headeset .van-col--9{
    padding: 10px 10px;
-   padding-top:20px ;
+   padding-top:18px ;
 }
 .headeset .van-col--15{
    text-align: left;
 }
+.headeset .van-col--15 span{
+   font-size: 18px;
+} 
 .beijing{
     display:inline-block; 
     width:60px;
     height: 60px;
-    background:url('../assets/image/beijing.png') no-repeat;
+    background:url('../assets/image/h5slogo.png') no-repeat;
     background-size: 100% 100%;
     position: relative;
     vertical-align: middle;
     margin-right: 15px;
+    border-radius: 30px;
 }
-.beijing .setLogo{
+/* .beijing .setLogo{
     display:block;
     width:40px;
     height: 46px;
-    background:url('../assets/image/WechatIMG1.png') no-repeat;
+    background:url('../assets/image/h5slogo.png') no-repeat;
     background-size: 100% 100%;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%,-50%);
- }
+ } */
 .source{
    display:inline-block; 
    vertical-align: middle;
@@ -146,6 +163,7 @@ About(){
    height: 19px;
    background: url('../assets/image/dianyuan.png') no-repeat;
    background-size: 100% 100%;
+   margin-right:5px;
    }
 .van-row .van-col{
     font-size: 15px;
@@ -185,7 +203,7 @@ About(){
     display: inline-block;
     width: 16px;
     height: 16px;
-    background: url('../assets/image/gengxin.png') no-repeat;
+    background: url('../assets/image/about.png') no-repeat;
     background-size:100% 100%;
     vertical-align: middle;
     margin-right: 5px;
