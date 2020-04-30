@@ -163,11 +163,8 @@ import {H5siOS,H5sPlayerCreate} from '../assets/js/h5splayerhelper.js'
 import {H5sPlayerWS,H5sPlayerHls,H5sPlayerRTC} from '../assets/js/h5splayer.js'
 import $ from 'jquery'
 import Liveplayer from './liveplayer'
-<<<<<<< HEAD
-import html2canvas from 'html2canvas'
-=======
-import {pushHistory} from '../assets/js/unit'
->>>>>>> c7b68f7b93f7ad44cb4764cd2ec304f5aeff92ac
+// import html2canvas from 'html2canvas'
+// import {pushHistory} from '../assets/js/unit'
 
 import Vue from 'vue'
 import { Overlay } from 'vant';
@@ -182,18 +179,15 @@ export default {
     },
 	data () {
 		return {
-<<<<<<< HEAD
 			showscreenshot:false,
-=======
 			fullplay:true,
->>>>>>> c7b68f7b93f7ad44cb4764cd2ec304f5aeff92ac
 			showli: false,
 			rc:13,
 			selectCol: 1,
 			selectRow: 1,
 			proto: this.$store.state.rtc,
-			rows: 1,
-			cols: 1,
+			rows: 2,
+			cols: 2,
 			loading:false,
 			finished:false,
 			list: [],
@@ -225,28 +219,15 @@ export default {
 			},
 			activefoot:'',
 			value:'',
-<<<<<<< HEAD
 			viewHistory:'',
 			img:[''],
 			dataurl:'',
 			h5videoid:'',
 			Screen
-=======
-			viewHistory:[],
-			timerRunInfo1:"",
->>>>>>> c7b68f7b93f7ad44cb4764cd2ec304f5aeff92ac
 		}
 	} ,
   // 一进来就要更新的
 	mounted(){
-<<<<<<< HEAD
-		console.log("token",this.$store.state.token);
-		this.updateUI();
-	   	this.$root.bus.$emit('liveplayproto',this.proto);
-		this.Regional()
-        console.log(this.viewHistory)
-	 },
-=======
 		// console.log("token",this.$store.state.token);
 		this.updateUI();
 		this.Regional();
@@ -257,7 +238,6 @@ export default {
 	beforeDestroy() {
         clearInterval(this.timerRunInfo1);
     },
->>>>>>> c7b68f7b93f7ad44cb4764cd2ec304f5aeff92ac
 	created(){
 		// this.viewHistory=JSON.parse(localStorage.getItem("viewHistory"))
 		// console.log(this.viewHistory)	
@@ -265,9 +245,6 @@ export default {
 		this.historyimg()
 		// console.log(this.viewHistory)
 	},
-<<<<<<< HEAD
-
-=======
 	watch:{
 		fullplay: {
 			handler: function (val, oldVal) {
@@ -283,7 +260,6 @@ export default {
 			deep: true
 		},
 	},
->>>>>>> c7b68f7b93f7ad44cb4764cd2ec304f5aeff92ac
 // 方法
 methods:{
 	//弹出曾
@@ -298,13 +274,7 @@ methods:{
 		this.$root.bus.$emit('liveplayclose',vid,playid);
 	},
 	FullScreen(){
-<<<<<<< HEAD
-	   console.log("全屏");
-=======
-		
-		
 		// console.log("全屏");
->>>>>>> c7b68f7b93f7ad44cb4764cd2ec304f5aeff92ac
         // let playid = 'hvideo' + this.$data.selectRow + this.$data.selectCol;
 		// this.$root.bus.$emit('liveplaypull',playid);
 		var elem = $("#full").get(0);
@@ -415,11 +385,9 @@ methods:{
 			cols: parseInt(cols)
 		});
 		Vue.nextTick(function () {
-<<<<<<< HEAD
 			//$('div[name="flex"]').height(($(".content").height() - 50) / rows);
 			$('div[name="flex"]').height(_this.contentHeight / rows);
 			console.log($('div[name="flex"]'))
-=======
 			console.log(document.webkitIsFullScreen);
 			if(document.webkitIsFullScreen){
 				var width=window.screen.height;
@@ -432,7 +400,6 @@ methods:{
 			}else{
 				$('div[name="flex"]').height(_this.contentHeight / rows);
 			}
->>>>>>> c7b68f7b93f7ad44cb4764cd2ec304f5aeff92ac
 		})
 	},
 
@@ -449,14 +416,10 @@ methods:{
 			$('#videoPanel div[class*="videoClickColor"]').removeClass('videoClickColor');
 			$('#videoPanel>div').eq(r - 1).children('div').eq(c - 1).addClass('videoClickColor');
 		}
-<<<<<<< HEAD
-  },
-=======
 		if(document.webkitIsFullScreen){
 			$(".Close_flex1").toggle();
 		}
 	},
->>>>>>> c7b68f7b93f7ad44cb4764cd2ec304f5aeff92ac
 	stopVideo(event){
 		return;
 	},
