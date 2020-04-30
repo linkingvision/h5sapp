@@ -17,7 +17,7 @@
 								</v-liveplayer>
 							</div>
 						</div>
-						<div class="Close_flex">
+						<div class="Close_flex1">
 							<div class="video_funsize">
 								<div class="fun_pull" @click="FullScreen"></div>
 								<span class="fun_coll" @click="Favorites"></span>
@@ -30,6 +30,19 @@
 								<span @click="close()">关闭</span>
 							</div>
 						</div>
+					</div>
+				</div>
+				<div class="Close_flex">
+					<div class="video_funsize">
+						<div class="fun_pull" @click="FullScreen"></div>
+						<span class="fun_coll"></span>
+						<span class="fun_voice"></span>
+						<span>标清</span>
+					</div>
+					<div class="video_funsize1">
+						<span class="fun_onwwin" data-row="1|1" @click="changePanel($event)"></span>
+						<span class="fun_fouwin" data-row="2|2" @click="changePanel($event)"></span>
+						<span @click="close">关闭</span>
 					</div>
 				</div>
 			</van-sticky>
@@ -150,7 +163,11 @@ import {H5siOS,H5sPlayerCreate} from '../assets/js/h5splayerhelper.js'
 import {H5sPlayerWS,H5sPlayerHls,H5sPlayerRTC} from '../assets/js/h5splayer.js'
 import $ from 'jquery'
 import Liveplayer from './liveplayer'
+<<<<<<< HEAD
 import html2canvas from 'html2canvas'
+=======
+import {pushHistory} from '../assets/js/unit'
+>>>>>>> c7b68f7b93f7ad44cb4764cd2ec304f5aeff92ac
 
 import Vue from 'vue'
 import { Overlay } from 'vant';
@@ -165,14 +182,18 @@ export default {
     },
 	data () {
 		return {
+<<<<<<< HEAD
 			showscreenshot:false,
+=======
+			fullplay:true,
+>>>>>>> c7b68f7b93f7ad44cb4764cd2ec304f5aeff92ac
 			showli: false,
 			rc:13,
 			selectCol: 1,
 			selectRow: 1,
 			proto: this.$store.state.rtc,
-			rows: 2,
-			cols: 2,
+			rows: 1,
+			cols: 1,
 			loading:false,
 			finished:false,
 			list: [],
@@ -204,21 +225,39 @@ export default {
 			},
 			activefoot:'',
 			value:'',
+<<<<<<< HEAD
 			viewHistory:'',
 			img:[''],
 			dataurl:'',
 			h5videoid:'',
 			Screen
+=======
+			viewHistory:[],
+			timerRunInfo1:"",
+>>>>>>> c7b68f7b93f7ad44cb4764cd2ec304f5aeff92ac
 		}
 	} ,
   // 一进来就要更新的
 	mounted(){
+<<<<<<< HEAD
 		console.log("token",this.$store.state.token);
 		this.updateUI();
 	   	this.$root.bus.$emit('liveplayproto',this.proto);
 		this.Regional()
         console.log(this.viewHistory)
 	 },
+=======
+		// console.log("token",this.$store.state.token);
+		this.updateUI();
+		this.Regional();
+		$(".Close_flex1").hide();
+		this.$root.bus.$emit('liveplayproto',this.proto);
+		this.fullplay=document.webkitIsFullScreen;
+	},
+	beforeDestroy() {
+        clearInterval(this.timerRunInfo1);
+    },
+>>>>>>> c7b68f7b93f7ad44cb4764cd2ec304f5aeff92ac
 	created(){
 		// this.viewHistory=JSON.parse(localStorage.getItem("viewHistory"))
 		// console.log(this.viewHistory)	
@@ -226,7 +265,25 @@ export default {
 		this.historyimg()
 		// console.log(this.viewHistory)
 	},
+<<<<<<< HEAD
 
+=======
+	watch:{
+		fullplay: {
+			handler: function (val, oldVal) {
+				$(".Close_flex1").hide();
+				var width=window.screen.height;
+				var height=window.screen.width;
+				$('div[name="flex"]').width(height);
+				$('div[name="flex"]').height(this.contentHeight / this.rows);
+				$("#videoPanel").css({"transform":"none"});
+				clearInterval(this.timerRunInfo1);
+				this.fullplay=true;
+			},
+			deep: true
+		},
+	},
+>>>>>>> c7b68f7b93f7ad44cb4764cd2ec304f5aeff92ac
 // 方法
 methods:{
 	//弹出曾
@@ -241,7 +298,13 @@ methods:{
 		this.$root.bus.$emit('liveplayclose',vid,playid);
 	},
 	FullScreen(){
+<<<<<<< HEAD
 	   console.log("全屏");
+=======
+		
+		
+		// console.log("全屏");
+>>>>>>> c7b68f7b93f7ad44cb4764cd2ec304f5aeff92ac
         // let playid = 'hvideo' + this.$data.selectRow + this.$data.selectCol;
 		// this.$root.bus.$emit('liveplaypull',playid);
 		var elem = $("#full").get(0);
@@ -266,30 +329,24 @@ methods:{
 				} else if (document.msExitFullscreen) {
 					document.msExitFullscreen();
 				}
-				console.log("========  updateUIExitFullScreen开启");
-				var width=$(document.body).height();
-				var height=$(document.body).width();
-				$('div[name="flex"]').width(height);
-				$('div[name="flex"]').height(this.contentHeight / this.rows);
-				$("#videoPanel").css({"width":"100%","height":"100%","transform":"none"});
-				// $("#videoPanel").removeClass('mirrorRotateLevel');
-				$("#videoPanel").css('margin-top',"0" );
-      			$("#videoPanel").css('margin-left',"0" );
-				this.updateUIExitFullScreen();
+				this.fullplay=false;
+				clearInterval(this.timerRunInfo1);
+				// this.updateUIExitFullScreen();
 			} else {
-				var width=$(document.body).height();
-				var height=$(document.body).width();
+				var width=window.screen.height;
+				var height=window.screen.width;
 				var Closehe=$(".Close_flex").height()
 				$('div[name="flex"]').width(width);
-				$('div[name="flex"]').height(height/ this.rows-Closehe);
-				console.log('panelFullScreen3关闭',width,height,( width- height) / 2, 0 - ( width- height) / 2 );
-				$("#videoPanel").css({"width":width,"height":height,"transform":"rotate(90deg)"});
-				$("#videoPanel").css('margin-top',  ( width- height) / 2 );
-      			$("#videoPanel").css('margin-left',  0 - ( width- height) / 2 );
-
-				// $("#videoPanel").addClass('mirrorRotateLevel');
-
-
+				$('div[name="flex"]').height(height/ this.rows);
+				$("#videoPanel").css({"transform":"rotate(90deg)"});
+				$(".Close_flex1").width(width-30);
+				$(".Close_flex1").show();
+				this.timerRunInfo1 = setInterval(() => {
+					this.fullplay=document.webkitIsFullScreen;
+				}, 500);
+				// console.log('panelFullScreen3关闭',width,height);
+				// console.log('屏幕分辨率',window.screen.width ,window.screen.height );
+				// console.log('可用工作区',window.screen.availWidth ,window.screen.availHeight );
 				if (elem.requestFullscreen) {
 					elem.requestFullscreen();
 				} else if (elem.webkitRequestFullscreen) {
@@ -305,8 +362,15 @@ methods:{
 		}
 	},
 	updateUIExitFullScreen(){
-		
-		if (!document.fullscreenElement && !document.webkitIsFullScreen && !document.mozFullScreen && !document.msFullscreenElement)
+		// console.log("1251")
+		$(".Close_flex1").hide();
+		var width=window.screen.height;
+		var height=window.screen.width;
+		$('div[name="flex"]').width(height);
+		$('div[name="flex"]').height(this.contentHeight / this.rows);
+		$("#videoPanel").css({"transform":"none"});
+		// $('.Close_flex').width(height-30);
+		if (document.fullscreenElement && document.webkitIsFullScreen && document.mozFullScreen && document.msFullscreenElement)
 		{
 			console.log("1251")
 			$('div[name="flex"]').height(this.contentHeight / this.rows);
@@ -314,7 +378,9 @@ methods:{
 	},
   	//实时视频遮罩层显示和隐藏
 	showvideo(){
-		this.showli = true;
+		if(!document.webkitIsFullScreen){
+			this.showli = true;
+		}
 		if(this.show===false){
 		this.show=true
 		}else{
@@ -349,9 +415,24 @@ methods:{
 			cols: parseInt(cols)
 		});
 		Vue.nextTick(function () {
+<<<<<<< HEAD
 			//$('div[name="flex"]').height(($(".content").height() - 50) / rows);
 			$('div[name="flex"]').height(_this.contentHeight / rows);
 			console.log($('div[name="flex"]'))
+=======
+			console.log(document.webkitIsFullScreen);
+			if(document.webkitIsFullScreen){
+				var width=window.screen.height;
+				var height=window.screen.width;
+				// var Closehe=$(".Close_flex").height()
+				$('div[name="flex"]').width(width);
+				$('div[name="flex"]').height(height/ _this.rows);
+				$("#videoPanel").css({"transform":"rotate(90deg)"});
+				// $(".Close_flex").width(width-30);
+			}else{
+				$('div[name="flex"]').height(_this.contentHeight / rows);
+			}
+>>>>>>> c7b68f7b93f7ad44cb4764cd2ec304f5aeff92ac
 		})
 	},
 
@@ -368,7 +449,14 @@ methods:{
 			$('#videoPanel div[class*="videoClickColor"]').removeClass('videoClickColor');
 			$('#videoPanel>div').eq(r - 1).children('div').eq(c - 1).addClass('videoClickColor');
 		}
+<<<<<<< HEAD
   },
+=======
+		if(document.webkitIsFullScreen){
+			$(".Close_flex1").toggle();
+		}
+	},
+>>>>>>> c7b68f7b93f7ad44cb4764cd2ec304f5aeff92ac
 	stopVideo(event){
 		return;
 	},
@@ -390,15 +478,15 @@ methods:{
 	Regional(){
 		var root = this.$store.state.callport;
 		var url = root + "/api/v1/GetRegion?session="+this.$store.state.token;
-		console.log(url,this.$store.state.callport,this.Useport,root);
+		// console.log(url,this.$store.state.callport,this.Useport,root);
 		this.$http.get(url).then(result=>{
 			var oldarr=result.data.root;
 			
 			var oldarr1=result.data.src;
 			var dataroot=this.getchild(oldarr,oldarr1);
-			console.log(dataroot);
+			// console.log(dataroot);
 			this.camdata.push(dataroot);
-			console.log(this.camdata)
+			// console.log(this.camdata)
 		
 		})
 	},
@@ -602,7 +690,22 @@ methods:{
 	background-size: 100%;
 }
 /* 视频下的功能键 */
+#full{
+	position: relative;
+}
 .Close_flex{
+	display: flex;
+	justify-content: space-between;
+	padding: 10px 15px;
+	font-size: 14px;
+	color: #C3C3C3;
+	background-color: #2D2D30;
+}
+.Close_flex1{
+	width: 100%;
+	position: absolute;
+	left: 0;
+	bottom: 0;
 	display: flex;
 	justify-content: space-between;
 	padding: 10px 15px;
@@ -707,8 +810,10 @@ div[name='flex'] {
   background-color:transparent !important;
 }
 .videoClickColor {
-    background-color: #616263 !important;
-    opacity: 0.50;
+    /* background-color: #616263 !important; */
+	border: 1px solid #616263;
+	/* box-sizing: border-box; */
+    /* opacity: 0.50; */
 }
 .Favorites{
  margin-top:10px ;
