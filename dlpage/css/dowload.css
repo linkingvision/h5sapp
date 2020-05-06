@@ -65,8 +65,17 @@ a{
     color: #000000;
     line-height: 30px;
     font-weight: 700;
+    padding-left: 80px;
+    text-indent: -80px;
+    word-wrap:break-word;  
+    word-break:break-all;  
+    overflow: hidden;
 }
-
+.Function ul>li>a{
+    color: #000000;
+    text-decoration:underline;
+   
+}
 .introduce .introducetitle .update p{
     font-size: 15px;
     color: #000000;
