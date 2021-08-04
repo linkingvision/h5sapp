@@ -1,0 +1,72 @@
+{
+  "id": "1748212",
+  "name": "d'x",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "2045799",
+      "name": "厅内半球摄像机",
+      "font_class": "tingneibanqiushexiangji",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "2236720",
+      "name": "枪式摄像机",
+      "font_class": "gun-camera",
+      "unicode": "e77b",
+      "unicode_decimal": 59259
+    },
+    {
+      "icon_id": "2237035",
+      "name": "球型摄像机",
+      "font_class": "dome-camera",
+      "unicode": "e77c",
+      "unicode_decimal": 59260
+    },
+    {
+      "icon_id": "5006194",
+      "name": "摄像机",
+      "font_class": "shexiangji",
+      "unicode": "e627",
+      "unicode_decimal": 58919
+    },
+    {
+      "icon_id": "9280327",
+      "name": "天然气报警器-01",
+      "font_class": "tianranqibaojingqi-",
+      "unicode": "e626",
+      "unicode_decimal": 58918
+    },
+    {
+      "icon_id": "10685812",
+      "name": "摄像机",
+      "font_class": "shexiangji1",
+      "unicode": "e62f",
+      "unicode_decimal": 58927
+    },
+    {
+      "icon_id": "13000501",
+      "name": "播放",
+      "font_class": "bofang",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
+    {
+      "icon_id": "12387165",
+      "name": "视频播放",
+      "font_class": "shipinbofang",
+      "unicode": "e911",
+      "unicode_decimal": 59665
+    },
+    {
+      "icon_id": "1281592",
+      "name": "操作-播放",
+      "font_class": "caozuo-bofang",
+      "unicode": "e634",
+      "unicode_decimal": 58932
+    }
+  ]
+}

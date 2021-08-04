@@ -1,0 +1,120 @@
+ul,li{
+    list-style: none;
+    margin:0 ;
+    padding: 0;
+}
+a{
+    text-decoration:none;
+    color: #FFFFFF;
+}
+.introduce{
+    padding: 0 10px;
+}
+.header{
+    height:275px; 
+    background: url('../img/share.png');
+    background-size: 100% 100%;
+    display: flex;
+    justify-content: center; /* 水平居中 */
+    align-items: center;     /* 垂直居中 */
+ } 
+.header .backgroudlogo{
+    display: block;
+    width: 84px;
+    height: 84px;
+    background: url('../img/h5slogo.png');
+    background-size: 100% 100%;
+}
+.logoheader h4{
+    line-height: 0;
+}
+.introduce{
+    margin-top:35px ;
+    padding-bottom:60px;
+    background-color:rgba(255, 255, 255, 0.973);
+}
+.introduce .introducetitle{ 
+    font-size: 23px;
+    font-weight: 700;
+    color: #000000;
+}
+.introducecenter{
+     text-align: center;
+}
+.introduce .introducetitle p{
+    font-size: 15px;
+    color: #010101;
+    font-weight: 500;
+}
+.introduce .introducespan{
+    display:inline-block;
+    vertical-align: center;
+    height: 15px;
+    width: 0px;
+    border:1px solid #3387FF;
+    margin-right:8px ;
+}
+.Function h3{
+    font-size: 23px;
+    font-weight: 700;
+    color: #000000;
+    line-height:15px;
+}
+.Function ul>li{
+    font-size: 15px;
+    color: #000000;
+    line-height: 30px;
+    font-weight: 700;
+    padding-left: 80px;
+    text-indent: -80px;
+    word-wrap:break-word;  
+    word-break:break-all;  
+    overflow: hidden;
+}
+.Function ul>li>a{
+    color: #000000;
+    text-decoration:underline;
+   
+}
+.introduce .introducetitle .update p{
+    font-size: 15px;
+    color: #000000;
+    line-height: 18px;
+}
+.introduce .introducetitle .update h3{
+    line-height: 1;
+    font-size: 20px;
+}
+.introduce .introducetitle .update .nonegenxin{
+    font-size: 15px;
+    color: #000000;
+    line-height: 20px;
+    font-weight: 700;
+}
+.software{
+    margin-top: 20px;
+}
+.software p{
+    color:'#000000';
+}
+/* foot */
+.download .foot{
+    height:57px;
+    width: 100%;
+    background-color:#FFFFFF;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+}
+.download .foot .foot-title{
+    height: 100%;
+    width: 100%;
+    font-size: 15px;
+    font-weight: 500;
+    text-align: center;
+    background-color: #3387FF;
+    line-height:40px;
+    border-radius: 5px;
+}
