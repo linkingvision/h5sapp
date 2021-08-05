@@ -174,9 +174,11 @@ export default {
              // return false;
              _this.$router.push('/liveview');
              Toast.success('登录成功');
+           }else{
+               Toast.fail('请检查您输入的信息是否正确')
            }
          }).catch(err=>{
-           Toast.fail('请输入正确账号和密码及配置！')
+           Toast.fail('数据库连接失败')
          })
     },
   // 点击复选款
