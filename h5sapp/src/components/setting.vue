@@ -85,6 +85,8 @@ export default {
 },
  Confirm(){
     this.dialogVisible=true
+    //原来没有写退出，只是弹回去了。
+    window.sessionStorage.clear()
     this.$router.push('/Login')
 },
 // 关于我们
