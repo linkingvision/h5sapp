@@ -81,24 +81,6 @@
 					<van-col span="11"></van-col>
 					<van-col span="2">...</van-col>
 				</van-row>
-				<!-- <div class="Collection">
-					<van-row type="flex" justify="end">
-						<van-col span="23"> 
-							<van-row>
-								<van-col span="16" class="favorites">
-									<p>海康枪机</p>
-									<span> 20200305  20：35</span>
-								</van-col>
-								<van-col span="1"></van-col>
-								<van-col span="7" class="videoElement">
-									<div class="favoritesplay">
-									<video class="h5video2" id="videoElement"  autoplay  style="background-color:#000000" webkit-playsinline playsinline></video>
-									</div>
-								</van-col>
-							</van-row>
-						</van-col>
-					</van-row>
-				 </div> -->
 				<!-- 资源列表 -->
 				<van-row class="resource">
 					<van-col span="11">资源列表</van-col>
@@ -118,20 +100,34 @@
 						class="van_popup"
 						style="">
 						<div class="devicetoog">
-							<div>区域</div>
+							<div>区域
+								
+							</div>
+							
 						</div>
+							<el-input
+  						placeholder="输入关键字进行过滤"
+  						v-model="filterText"
+						>
+						</el-input>
 						<el-tree class="el_tree" 
-							node-key="strName" 
+							 node-key="strName"
 							:default-expanded-keys="['root']" 
 							:data="camdata" 
-							:props="defaultProps1">
-							<span slot-scope="{ node, data }" style="width:100%;">
+							:props="defaultProps1"
+							:filter-node-method="filterNode"
+							@node-click="handleNodeClick1"
+							 ref="tree"
+							 >
+							<span slot-scope="{data}" style="width:100%;">
 								<span>
 									<span class="mdi mdi-view-sequential fa-fw" style="color:rgb(142, 132, 132);"></span>
 									<span :class="data.iconclass1" style="padding-left: 4px;">{{data.strName}}</span>
+									
 								</span>
-								<div v-if="data.cam.length!=0">
-									<el-tree class="el_tree1" :data="data.cam" :props="defaultProps1" @node-click="handleNodeClick1">
+								
+								<!-- <div v-if="data.cam.length!=0">
+									<el-tree class="el_tree1" :data="data.cam" :props="defaultProps1" @node-click="handleNodeClick1" :filter-node-method="filterNode">
 										<span slot-scope="{ node, data }">
 											<div style="width:100%;display: flex;justify-content: space-between;">
 												<span >
@@ -142,9 +138,10 @@
 											</div>
 										</span>
 									</el-tree>
-								</div>
+								</div> -->
 							</span>
 						</el-tree>
+
 					</van-popup>
 				</div>
 			</div>
@@ -179,6 +176,7 @@ export default {
     },
 	data () {
 		return {
+			
 			showscreenshot:false,
 			fullplay:true,
 			showli: false,
@@ -202,8 +200,14 @@ export default {
 			// h5handler:undefined,
 			// videoid:'app',
 			// 资源列表
+
+
+
 			selectCol: 1,
 			electRow: 1,
+
+			//eltree
+			filterText: '',
 			data:[],
 			camdata:[],
 			defaultProps: {
@@ -213,7 +217,7 @@ export default {
 				iconclass:"iconclass"
 			},
 			defaultProps1: {
-				children: 'node',
+				children: 'cam',
 				label: 'strName',
 				cam:"cam",
 			},
@@ -243,9 +247,13 @@ export default {
 		// console.log(this.viewHistory)	
 		// console.log(this.viewHistory)
 		this.historyimg()
+		// this.camDataList()
 		// console.log(this.viewHistory)
 	},
 	watch:{
+		filterText(val) {
+        this.$refs.tree.filter(val);
+      },
 		fullplay: {
 			handler: function (val, oldVal) {
 				$(".Close_flex1").hide();
@@ -262,6 +270,10 @@ export default {
 	},
 // 方法
 methods:{
+	filterNode(value, data) {
+        if (!value) return true;
+        return data.strName.indexOf(value) !== -1;
+      },
 	//弹出曾
 	showPopup() {
       	this.showli = true;
@@ -448,11 +460,93 @@ methods:{
 			var oldarr1=result.data.src;
 			var dataroot=this.getchild(oldarr,oldarr1);
 			// console.log(dataroot);
-			this.camdata.push(dataroot);
+			// this.camdata.push(dataroot);
 			// console.log(this.camdata)
+			this.datapush(dataroot)
 		
 		})
 	},
+	datapush(data){
+            this.level1(data)
+        },
+	      level1(data){
+            console.log(data.cam);
+            if(data.node.length!=0){
+                for (let i = 0; i < data.node.length; i++) {
+                data.cam.push(data.node[i])
+            }
+            }
+            delete data.node
+            for (let i = 0; i < data.cam.length; i++) {
+                console.log(data);
+                this.level2(data.cam[i])
+                this.camdata=[];
+                this.camdata.push(data);
+            }
+        },
+		level2(data){
+            if (data.name) {
+                return
+            }
+            if(data.node.length!=0){
+                for (let i = 0; i < data.node.length; i++) {
+                data.cam.push(data.node[i])
+                }
+            }
+            delete data.node
+            for (let i = 0; i < data.cam.length; i++) {
+                console.log(data.cam[i]);
+                if (data.cam[i].cam) {
+                    this.level3(data.cam[i])
+                }
+            }
+        },
+        level3(data){
+            if (data.name) {
+                return
+            }
+            if(data.node.length!=0){
+                for (let i = 0; i < data.node.length; i++) {
+                data.cam.push(data.node[i])
+            }
+            }
+            delete data.node;
+            for (let i = 0; i < data.cam.length; i++) {
+                console.log(data.cam[i]);
+                if (data.cam[i].cam) {
+                    this.level4(data.cam[i])
+                }
+            }
+        },
+        level4(data){
+            if (data.name) {
+                return
+            }
+            if(data.node.length!=0){
+                for (let i = 0; i < data.node.length; i++) {
+                data.cam.push(data.node[i])
+            }
+            }
+            delete data.node;
+            for (let i = 0; i < data.cam.length; i++) {
+                console.log(data.cam[i]);
+                if (data.cam[i].cam) {
+                    this.level5(data.cam[i])
+                }
+            }
+        },
+        level5(data){
+            if (data.name) {
+                return
+            }
+            if(data.node.length!=0){
+                for (let i = 0; i < data.node.length; i++) {
+                data.cam.push(data.node[i])
+            }
+            }
+            delete data.node;
+        },
+	//function deepFirstSearch(node,nodeList){
 	getchild(arr,arr1) {
 		for(var i in arr.cam){
 			if(!arr.cam[i].strName){
@@ -608,6 +702,9 @@ methods:{
 .mirrorRotateLevel {
 	margin: auto auto;
 	/*兼容IE*/
+}
+/deep/.el-input .el-input__inner{
+	background:#9D9D9E;
 }
 /* 视频列表弹框 */
 
@@ -1048,5 +1145,6 @@ div[name='flex'] {
 .van-tree-select{
     margin-bottom:40px;
 } 
+
 
 </style>
