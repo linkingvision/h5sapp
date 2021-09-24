@@ -51,7 +51,80 @@
 				<div class="video_but">
 					<div class="fun_videotape"></div>
 					<span class="fun_Screenshots" @click="Screenshotsurl"></span>
-					<span class="fun_yuntai"></span>
+					<span class="fun_yuntai" @click="showyuntai($event)"></span>
+					<van-popup class="yuntai" v-model="yuntai" closeable position="bottom" :style="{ height: '48%',width:'100%'}">
+						<div>
+							<div>
+								<p style="font-size:20px;color:#C3C3C3;">{{this.yuntaiName}}</p>
+							</div>
+							<div>
+								<div style="display:flex;flex-direction:row;justify-content:space-between;padding-bottom:12px;padding-top:12px;">
+									<span style="display:inline-block;width:40%"></span>
+									<div style="width:60%;display:flex;flex-direction: row;justify-content: flex-start;">
+										<span style="display:inline-block;font-size:14px;text-align:center;line-height:275%;padding-right:10px;width:20px;">{{parseFloat(Number(Preset_value).toPrecision(15))}}</span>
+										<div style="width:70%;padding-top:18px;">					
+											<van-slider v-model="Preset_value" bar-height="1px" active-color="white" :step="0.1" :max="1" :min="0.1">
+												<template #button>
+													<div style="color:transparent;margin-top:-18px;">
+														<img src=".././assets/image/yuntai3.png" alt="">
+													</div>
+												</template>
+											</van-slider>
+										</div>
+									</div>
+								</div>
+								<div>
+									<div>
+										<div class="focus">
+											<button class="focusbtn1" @mousedown="PtzActionfocusing($event)" @mouseup="PtzActionStop($event)" @touchstart="PtzActionfocusing($event)" @touchend="PtzActionStop($event)"></button>
+											<button class="focusbtn2" @mousedown="PtzActionfocusings($event)" @mouseup="PtzActionStop($event)" @touchstart="PtzActionfocusings($event)" @touchend="PtzActionStop($event)"></button>
+										</div>
+									</div>
+									<div style="display:flex;flex-direction:row;justify-content:center;align-items:center;width:100%">
+										<div class="aperture">
+											<button class="apertureBtn1" @mousedown="PtzActionaperture($event)" @mouseup="PtzActionStop($event)" @touchstart="PtzActionaperture($event)" @touchend="PtzActionStop($event)"></button>
+											<button class="apertureBtn2" @mousedown="PtzActionaperturej" @mouseup="PtzActionStop" @touchstart="PtzActionaperturej" @touchend="PtzActionStop"></button>
+										</div>
+										<div class="lunpan">
+											<div class="lunpanTopLeftBtn" @mousedown="PtzActionUpleft($event)" @mouseup="PtzActionStop($event)" @touchstart="PtzActionUpleft($event)" @touchend="PtzActionStop($event)"></div>
+											<div class="lunpanTopBtn" @mousedown="PtzActionUp($event)" @mouseup="PtzActionStop($event)" @touchstart="PtzActionUp($event)" @touchend="PtzActionStop($event)"></div>
+											<div class="lunpanTopRightBtn" @mousedown="PtzActionUpright($event)"@mouseup="PtzActionStop($event)"@touchstart="PtzActionUpright($event)"@touchend="PtzActionStop($event)"></div>
+											<div class="lunpanLefBtn" @mousedown="PtzActionLeft($event)" @mouseup="PtzActionStop($event)" @touchstart="PtzActionLeft($event)" @touchend="PtzActionStop($event)"></div>
+											<div class="lunpanRigBtn" @mousedown="PtzActionRight($event)" @mouseup="PtzActionStop($event)" @touchstart="PtzActionRight($event)" @touchend="PtzActionStop($event)"></div>
+											<div class="lunpanBottomLeftBtn" @mousedown="PtzActionDownleft($event)"@mouseup="PtzActionStop($event)"@touchstart="PtzActionDownleft($event)" @touchend="PtzActionStop($event)"></div>
+											<div class="lunpanBotBtn" @mousedown="PtzActionDown($event)" @mouseup="PtzActionStop($event)" @touchstart="PtzActionDown($event)" @touchend="PtzActionStop($event)"></div>
+											<div class="lunpanBottomRightBtn" @mousedown="PtzActionDownright($event)" @mouseup="PtzActionStop($event)" @touchstart="PtzActionDownright($event)" @touchend="PtzActionStop($event)"></div>
+										</div>
+										<div class="focusing">
+											<button class="focusingBtn1" @mousedown="PtzActionZoomIn($event)" @mouseup="PtzActionStop($event)" @touchstart="PtzActionZoomIn($event)" @touchend="PtzActionStop($event)"></button>
+											<button class="focusingBtn2" @mousedown="PtzActionZoomOut($event)" @mouseup="PtzActionStop($event)" @touchstart="PtzActionZoomOut($event)" @touchend="PtzActionStop($event)"></button>
+										</div> 
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="presetBit" style="height:103%;top:630px;right:0;width:100%;background-color:#252526">
+							<div style="display:flex;flex-direction:row;justify-content:space-between;padding-bottom:12px;padding-top:12px;">
+								<span style="display:inline-block;width:40%">
+									<img src=".././assets/image/yuzhiwei.png" alt="" style="width:60px;height:22px">
+								</span>
+								<div style="width:22%;display:flex;flex-direction:row;justify-content: flex-start;">
+									<span @click="scrollTop($event)" style="display:inline-block;font-size:14px;text-align:center;line-height:275%;padding-right:10px;width:40px;">
+										<img src=".././assets/image/offyuzhiwei.png" alt="" style="width:40px;height:16px;">
+									</span>
+								</div>
+							</div>
+							<div v-for="Pre in Presetdata" :key="Pre.strName" style="display:flex;flex-direction:row;justify-content:flex-start;margin-left:15px;">
+								<span style="display:inline-block;line-height:68px;margin-right:20px;">{{Pre.strName}}</span>
+								<div class="preset_bgc">
+									<input type="text" class="preset_input" :value="Pre.strName">
+									<button class="yuzhiweigo" @click="preset_Jump(Pre.strToken)"></button>
+									<button class="yuzhiweiset" @click="preset_set(Pre.strToken,$event)"></button>
+									<!-- <button class="yuzhiweiclear"></button> -->
+								</div>
+							</div>
+						</div>
+					</van-popup>
 				</div>
 				<!-- 截图遮罩层 -->
 				<van-overlay :show="showscreenshot" z-index="99999">
@@ -122,7 +195,7 @@
 							<span slot-scope="{data}" style="width:100%;">
 								<span>
 									<span class="mdi mdi-view-sequential fa-fw" style="color:rgb(142, 132, 132);"></span>
-									<span :class="data.iconclass1" style="padding-left: 4px;">{{data.strName}}</span>
+									<span :class="data.iconclass1" style="padding-left: 4px;">{{data.strName?data.strName:'设备暂时不可用'}}</span>
 									
 								</span>
 								
@@ -165,8 +238,10 @@ import Liveplayer from './liveplayer'
 
 import Vue from 'vue'
 import { Overlay } from 'vant';
+import { Slider } from 'vant';
 
 Vue.use(Overlay);
+Vue.use(Slider);
 //  import "@static/css"
 // import { NavBar } from 'vant';
 export default {
@@ -227,7 +302,14 @@ export default {
 			img:[''],
 			dataurl:'',
 			h5videoid:'',
-			Screen
+			Screen,
+			// yutai
+			yuzhiwei:false,
+			yuntai:false,
+			Preset_value:0.5,
+			currtoken:undefined,
+			yuntaiName:'',
+			Presetdata:[],
 		}
 	} ,
   // 一进来就要更新的
@@ -270,6 +352,155 @@ export default {
 	},
 // 方法
 methods:{
+	showyuntai(){
+			let root = this.$store.state.callport;
+			this.yuntai = true;
+			this.Presetdata = [];
+			let cors = this.cols * this.rows;
+			if (cors > 4) {
+				return false;
+			}
+			//url
+			let url =root +"/api/v1/GetPresets?token=" +this.currtoken +"&session=" +this.$store.state.token;
+			//重组
+			this.$http.get(url).then((result) => {
+				if (result.status == 200) {
+					if (result.bStatus == false) {
+						return false;
+					} else {
+						let data = result.data;
+						console.log(data);
+						for (let i = 0; i < data.preset.length; i++) {
+							let newItem = {
+								strName: data.preset[i].strName,
+								strToken: data.preset[i].strToken,
+							};
+							this.Presetdata.push(newItem);
+						
+							if (i > 2) {
+								break;
+							}
+						}
+					}
+				}
+			});
+			
+			let $container = $("#" + this.h5id);
+			let $controls = $container.children(".liveplay_ptz");
+			if (this.ptzshow == false) {
+				$controls.css("display", "block");
+				this.ptzshow = true;
+			} else {
+				$controls.css("display", "none");
+				this.ptzshow = false;
+			}
+		},
+		yuntaiToken(token){
+			this.currtoken = token;
+			let root = this.$store.state.callport;
+			let url = root + "/api/v1/GetRegion?session="+this.$store.state.token;
+			this.$http.get(url).then(result=>{
+				console.log(result.data.src);
+				let str = result.data.src;
+				for (let i = 0; i < str.length; i++) {
+					if(this.currtoken==str[i].strToken){
+						this.yuntaiName = str[i].strName;
+					}
+				}
+			})
+		},
+		PtzActionfocusing(event) {
+			this.PtzAction("focusin");
+		},
+		PtzActionfocusings(event) {
+			this.PtzAction("focusout");
+		},
+		PtzActionaperture(event) {
+			this.PtzAction("irisin");
+		},
+		PtzActionaperturej(event) {
+			this.PtzAction("irisout");
+		},
+		PtzActionZoomIn(event) {
+			console.log("PtzActionZoomIn");
+			this.PtzAction("zoomin");
+		},
+		PtzActionZoomOut(event) {
+			this.PtzAction("zoomout");
+		},
+		PtzActionUp(event) {
+			this.PtzAction("up");
+		},
+		PtzActionUpleft(event) {
+			this.PtzAction("upleft");
+		},
+		PtzActionUpright(event) {
+			this.PtzAction("upright");
+		},
+		PtzActionDownleft(event) {
+			this.PtzAction("downleft");
+		},
+		PtzActionDownright(event) {
+			this.PtzAction("downright");
+		},
+		PtzActionLeft(event) {
+			this.PtzAction("left");
+		},
+		PtzActionRight(event) {
+			this.PtzAction("right");
+		},
+		PtzActionDown(event) {
+			this.PtzAction("down");
+		},
+		PtzActionStop(event) {
+			console.log("PtzActionStop");
+			this.PtzAction("stop");
+		},
+		PtzAction(action) {
+			let root = this.$store.state.callport;
+			// if (this.h5handler == undefined) {
+			// 	return;
+			// }
+			let _this = this;
+			let ptzcmd ="token=" +this.currtoken +"&action=" +action +"&speed=" +parseFloat(Number(this.Preset_value).toPrecision(15)) +"";
+			console.log("ptzcmd", ptzcmd);
+			let url =root +"/api/v1/Ptz?" + ptzcmd + "&session=" + this.$store.state.token;
+			this.$http.get(url).then((result) => {
+				console.log(result);
+				if (result.status == 200) {}
+			})
+			.catch((error) => {
+				console.log("ptz failed!", error);
+			});
+		},
+
+		//预置位跳转
+		preset_Jump(token) {
+			//url
+			let root = this.$store.state.callport;
+			let url =root +"/api/v1/Ptz?token=" +this.currtoken+"&action=preset&preset=" +token +"&speed=" +parseFloat(Number(this.Preset_value).toPrecision(15))+"&session=" +this.$store.state.token;
+			console.log(url);
+			//重组
+			this.$http.get(url).then((result) => {
+				if (result.status == 200) {
+					console.log("跳转");
+				}
+			});
+		},
+		//预置位设置
+		preset_set(token, event) {
+			let input_val =event.currentTarget.previousElementSibling.previousElementSibling.value;
+			//url
+			let url =this.$store.state.callport +"/api/v1/SetPreset?token=" +this.currtoken +"&presetname=" +input_val +"&presettoken=" +token +"&session=" +this.$store.state.token;
+			console.log(url);
+			//重组
+			this.$http.get(url).then((result) => {
+				if (result.status == 200) {
+					console.log(result);
+				}
+			});
+			console.log("设置");
+		},
 	filterNode(value, data) {
         if (!value) return true;
         return data.strName.indexOf(value) !== -1;
@@ -284,6 +515,8 @@ methods:{
 		let vid = 'h' + this.$data.selectRow + this.$data.selectCol;
 		let playid = 'hvideo' + this.$data.selectRow + this.$data.selectCol;
 		this.$root.bus.$emit('liveplayclose',vid,playid);
+		this.currtoken="";
+		this.yuntaiName = "";
 	},
 	FullScreen(){
 		// console.log("全屏");
@@ -417,6 +650,9 @@ methods:{
 
 
 	videoClick(r, c, $event) {
+		let str = $($event.currentTarget.firstElementChild).children('video').attr('poster');
+		let token = str.substring(str.indexOf('=')+1,str.indexOf('&'));
+		this.yuntaiToken(token);
 		this.selectCol = c;
 		this.selectRow = r;
 		 let h5video='hvideo'+r+c
@@ -446,6 +682,8 @@ methods:{
             console.log("----------------------", data.strToken,data.streamprofile, data.name,data.strName, vid);
 			// return false;
 			_this.$root.bus.$emit('liveplay', data.strToken,data.streamprofile, data.name,data.strName, vid);
+			this.currtoken = data.strToken;
+			this.yuntaiName = data.strName;
 		}
 
 	},
@@ -456,8 +694,8 @@ methods:{
 		// console.log(url,this.$store.state.callport,this.Useport,root);
 		this.$http.get(url).then(result=>{
 			var oldarr=result.data.root;
-			
 			var oldarr1=result.data.src;
+			result.data.root.strName="根节点";
 			var dataroot=this.getchild(oldarr,oldarr1);
 			// console.log(dataroot);
 			// this.camdata.push(dataroot);
@@ -591,11 +829,12 @@ methods:{
 	},
 	    // 历史记录播放
 	changePanelhistory(event,item) {
-		console.log(event)	
-		 let _this = this;
-		 let vid = 'h' + _this.$data.selectRow + _this.$data.selectCol;
-		 let playid = 'hvideo' + this.$data.selectRow + this.$data.selectCol;
-		 _this.$root.bus.$emit('liveplay', item.token,item.streamprofile, item.name,item.strName, vid);
+		console.log(event);
+		this.yuntaiToken(item.token,item.name);
+		let _this = this;
+		let vid = 'h' + _this.$data.selectRow + _this.$data.selectCol;
+		let playid = 'hvideo' + this.$data.selectRow + this.$data.selectCol;
+		_this.$root.bus.$emit('liveplay', item.token,item.streamprofile, item.name,item.strName, vid);
 		var root = process.env.API_ROOT;
 		var wsroot = process.env.WS_HOST_ROOT;
 		if (root == undefined){
@@ -693,7 +932,7 @@ methods:{
 }
 
 </script>
-<style  scoped>
+<style  scoped lang="scss">
 
 .contert{
 	margin: 0 10px;
@@ -704,17 +943,21 @@ methods:{
 	/*兼容IE*/
 }
 /deep/.el-input .el-input__inner{
-	background:#9D9D9E;
+	background:#252527;
+	border: none;
+}
+.van_popup /deep/ input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
+  color: #50585CFF;
 }
 /* 视频列表弹框 */
 
 .van_popup{
 	padding: 0px 10px 0 10px;box-sizing: border-box;
-	background-color: #252526;
+	background-color: #111111FF;
 }
 .el_tree{
 	color: #C3C3C3 !important;
-	background-color: #252526;
+	background-color: #111111FF;
 }
 .el_tree1{
 	color: #C3C3C3 !important;
@@ -931,7 +1174,7 @@ div[name='flex'] {
 	margin: 30px 0 8px 0;
 }
 .liveinfo .livespan{
-  color: #6BE7C3;
+  color: #1BD9FE;
   /* font-size:46px; */
 }
 .van-search__content{
@@ -1146,5 +1389,164 @@ div[name='flex'] {
     margin-bottom:40px;
 } 
 
-
+/deep/ .el-tree-node:focus > .el-tree-node__content {
+  color:#1A73E8;
+  background-color: transparent;
+}
+// 云台
+.yuntai{
+	background-color:#252526;
+	padding-left:15px;
+	// 聚焦按钮
+	.focus{
+		width:30%;
+		height:40px;
+		margin-left: 24px;
+		.focusbtn1{
+			width:40%;
+			height:40px;
+			background:url('.././assets/image/jujiao1.png')  no-repeat center;
+			background-size: 70%;
+			border:none;
+		}
+		.focusbtn2{
+			width:40%;
+			height:40px;
+			background:url('.././assets/image/jujiao2.png')  no-repeat center;
+			background-size: 70%;
+			border:none;
+		}
+	}
+	// 光圈
+	.aperture{
+		width:16%;
+		height: 175px;
+		display: flex;
+		flex-direction:column;
+		margin-left: 10px;
+		.apertureBtn1{
+			width:55%;
+			height:70px;
+			background:url('.././assets/image/guangquan1.png')  no-repeat center;
+			background-size: 95%;
+			border:none;
+		}
+		.apertureBtn2{
+			width:55%;
+			height:50px;
+			background:url('.././assets/image/guangquan2.png')  no-repeat center;
+			background-size: 95%;
+			border:none;
+		}
+	}
+	// 方向
+	.lunpan{
+		width:60%;
+		height: 175px;
+		background:url('.././assets/image/lunpan.png')  no-repeat center;
+		background-size: 60%;
+		position: relative;
+		div{
+			width:20px;
+			height:20px;
+		}
+		.lunpanTopLeftBtn{
+			position: absolute;
+			top:45px;
+			left:30%;
+		}
+		.lunpanTopBtn{
+			position: absolute;
+			top:30px;
+			left:45%;
+		}
+		.lunpanTopRightBtn{
+			position: absolute;
+			top:45px;
+			left:60%;
+		}
+		.lunpanLefBtn{
+			position: absolute;
+			top:75px;
+			left:25%;
+		}
+		.lunpanRigBtn{
+			position: absolute;
+			top:75px;
+			left:65%;
+		}
+		.lunpanBottomLeftBtn{
+			position: absolute;
+			top:110px;
+			left:30%;
+		}
+		.lunpanBotBtn{
+			position: absolute;
+			top:125px;
+			left:45%;
+		}
+		.lunpanBottomRightBtn{
+			position: absolute;
+			top:110px;
+			left:60%;
+		}
+	}
+	// 调焦
+	.focusing{
+		width:10%;
+		height:175px;
+		display: flex;
+		flex-direction:column;
+		background:url('.././assets/image/topbottom.png')  no-repeat;
+		background-size: 80%;
+		button{
+			width: 80%;
+			height: 27%;
+			background-color: transparent;
+			border: none;
+		}
+	}
+	// 预置位
+	.preset_bgc{
+		width: 70%;
+		height: 24px;
+		background: rgba(255, 255, 255, 0.2);
+		display: flex;
+		align-content: center;
+		margin-top: 20px;
+		.preset_input {
+			width: 60%;
+			height: 24px;
+			background: none;
+			/* opacity:0.2; */
+			border-radius: 12px;
+			border: 0px;
+			padding: 0 0 0 10px;
+			color: rgba(255, 255, 255, 1) !important;
+		}
+		button {
+			width: 10%;
+			background: none;
+			border: 0;
+			font-size: 15px;
+			color: #ffffff;
+			margin-left: 3px;
+		}
+		.yuzhiweigo{
+			height: 24px;
+			background: url(.././assets/image/yuzhiweigo.png)no-repeat center;
+			background-size: 70%;
+		}
+		.yuzhiweiset{
+			height: 24px;
+			background: url(.././assets/image/yuzhiweiset.png)no-repeat center;
+			background-size: 70%;
+		}
+		.yuzhiweiclear{
+			height: 24px;
+			background: url(.././assets/image/yuzhiweiclear.png)no-repeat center;
+			background-size: 70%;
+		}
+	}
+}
 </style>

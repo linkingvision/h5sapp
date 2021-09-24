@@ -32,7 +32,8 @@ export default {
 .titleCall .van-col{
     font-size: 23px;
     text-align: left;
-    color: RGBA(107, 231, 195, 1);
+    color:#1BD9FE;
+    /* color: RGBA(107, 231, 195, 1); */
     text-indent: 30px;
 }
 .Callimg{

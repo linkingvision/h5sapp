@@ -103,14 +103,14 @@ export default {
     display: inline-block;
     width: 23px;
     height: 14px;
-    background: url('../assets/image/live2.png') no-repeat;
+    background: url('../assets/image/live4.png') no-repeat;
     background-size:100% 100%;
 }
 .tabbarlive2{
     display: inline-block;
     width: 23px;
     height: 14px;
-    background: url('../assets/image/live.png') no-repeat; 
+    background: url('../assets/image/live3.png') no-repeat; 
     background-size:100% 100%;
  }
  /* 播放 */
@@ -118,14 +118,14 @@ export default {
     display: inline-block;
     width: 16px;
     height: 20px;
-    background: url('../assets/image/play2.png') no-repeat;
+    background: url('../assets/image/play4.png') no-repeat;
     background-size:100% 100%;
   }
   .tabbarplay2{
     display: inline-block;
     width: 16px;
     height: 20px;
-    background: url('../assets/image/play.png') no-repeat;
+    background: url('../assets/image/play3.png') no-repeat;
     background-size:100% 100%;
  }
  /* 实时报警 */
@@ -133,14 +133,14 @@ export default {
     display: inline-block;
     width: 18px;
     height: 21px;
-    background: url('../assets/image/police2.png') no-repeat;
+    background: url('../assets/image/police4.png') no-repeat;
     background-size:100% 100%;
   }
   .tabbarpolice2{
     display: inline-block;
     width: 18px;
     height: 21px;
-    background: url('../assets/image/police.png') no-repeat;
+    background: url('../assets/image/police3.png') no-repeat;
     background-size:100% 100%;
  }
  /* 系统管理 */
@@ -148,14 +148,14 @@ export default {
     display: inline-block;
     width: 19px;
     height: 19px;
-    background: url('../assets/image/sysem2.png') no-repeat;
+    background: url('../assets/image/sysemseting4.png') no-repeat;
     background-size:100% 100%;
   }
   .tabbarsysme2{
     display: inline-block;
     width: 19px;
     height: 19px;
-    background: url('../assets/image/sysem.png') no-repeat;
+    background: url('../assets/image/sysemseting3.png') no-repeat;
     background-size:100% 100%;
  }
 </style>
